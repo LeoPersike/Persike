@@ -33,6 +33,9 @@ int main()
         return -1;
     }
 
+    // Inicializando primitives
+    al_init_primitives_addon();
+
 
     // Insercao de retangulos
     insere_retangulo(40,55,250,250,255,0,255,5,&Lista);

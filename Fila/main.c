@@ -14,20 +14,16 @@
 
 int main()
 {
-    int quantidade_dados = 0;
-    Lista* fila;
-
-    push(&fila,10,&quantidade_dados);
-    push(&fila,20,&quantidade_dados);
-    push(&fila,30,&quantidade_dados);
-    push(&fila,40,&quantidade_dados);
-    imprime_fila(fila,quantidade_dados);
-
-    printf("\nDando pop na fila: %.2f",pop(&fila,&quantidade_dados));
-    printf("\nDando pop na fila: %.2f",pop(&fila,&quantidade_dados));
-    imprime_fila(fila,quantidade_dados);
+    Fila* f = cria();
+    insere(f,20.0);
+    insere(f,20.8);
+    insere(f,21.2);
+    insere(f,24.3);
+    printf("Primeiro elemento: %.2f\n", retira(f));
+    printf("Segundo elemento: %.2f\n", retira(f));
+    printf("Configuracao da fila:\n");
+    imprime(f);
+    libera(f);
 
     return 0;
 }
-
-

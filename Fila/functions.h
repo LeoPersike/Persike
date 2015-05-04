@@ -9,13 +9,24 @@
 ************************************************************/
 
 //********* Definicao de dados *************
-typedef struct lista Lista; // Lista generica
-struct lista {
-    float dado;
-    Lista* prox;
+typedef struct no No;
+struct no {
+    float info;
+    No* prox;
+};
+
+typedef struct fila Fila;
+struct fila {
+    No* ini;
+    No* fim;
 };
 
 // Prototipagem das funcoes
-void push(Lista** fila,float data,int* quant);
-float pop(Lista** fila,int* quant);
-void imprime_fila(Lista* fila,int quant);
+Fila* cria (void);
+No* ins_fim (No* fim, float v);
+No* ret_ini (No* ini);
+void insere (Fila* f, float v);
+float retira (Fila* f);
+int vazia (Fila* f);
+void libera (Fila* f);
+void imprime (Fila* f);

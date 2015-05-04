@@ -12,57 +12,78 @@
 #include <stdlib.h>
 #include "functions.h"
 
-// Maxima quantidade de dados na pilha
-#define MAX_DATA 20
-
-// Funcoes
-void push(Lista** fila,float data,int* quant) // Adiciona item na pilha
+/* Funcao que cria fila */
+Fila* cria (void)
 {
-    // Testa se a pilha esta cheia
-    if((*quant) >= MAX_DATA)
-    {
-        printf("\n---------- Fila cheia ---------- ");
-    }
-    else
-    {
-        Lista* novo = (Lista*) malloc(sizeof(Lista));
-        if (novo == NULL) exit(EXIT_FAILURE); // nao ha mais espaco na memoria
-
-        (*quant)++;// +1 dado na pilha
-
-        novo->dado = data;
-        novo->prox = *fila;
-        *fila = novo; // aponta para o novo item da lista
-    }
+    Fila* f = (Fila*) malloc(sizeof(Fila));
+    f->ini = f->fim = NULL;
+    return f;
 }
 
-float pop(Lista** fila,int* quant) // Retorna e remove item da pilha
+/* função auxiliar: insere no fim */
+No* ins_fim (No* fim, float v)
 {
-    Lista* pointer = *fila;
-    Lista* save = *fila;
-
-    while(pointer->prox!=NULL) // Ultimo elemento
-    {
-        save = pointer; // Salva ultimo endereço para redirecionar como ultimo elemento
-        pointer = pointer->prox;
-    }
-
-    // Armazena o dado desejado, desaloca o primeiro elemento, redireciona o ponteiro prox do elemento anterior para NULL (ele vira o primeiro da fila agora)
-    float dado = pointer->dado;
-    free(pointer);
-    save->prox = NULL;
-    (*quant)--; // -1 dado na pilha
-
-    return dado;
+    No* p = (No*) malloc(sizeof(No));
+    p->info = v;
+    p->prox = NULL;
+    if (fim != NULL) /* verifica se lista não estava vazia */
+    fim->prox = p;
+    return p;
 }
 
-void imprime_fila(Lista* fila,int quant)
+/* função auxiliar: retira do início */
+No* ret_ini (No* ini)
 {
-    Lista* point = fila;
-    while(point!=NULL)
-    {
-        printf("\nEndereco: %p | Item %d: %.2f | Endereco proximo: %p ",point,quant,point->dado,point->prox);
-        point = point->prox; // Aponta para o proximo
-        quant--;
-    }
+    No* p = ini->prox;
+    free(ini);
+    return p;
+}
+
+void insere(Fila* f, float v)
+{
+    f->fim = ins_fim(f->fim,v);
+    if (f->ini==NULL) /* fila antes vazia? */
+        f->ini = f->fim;
+}
+
+float retira(Fila* f)
+{
+    float v;
+    if (vazia(f))
+        {
+        printf("Fila vazia.\n");
+        exit(1);
+        /* aborta programa */
+        }
+    v = f->ini->info;
+    f->ini = ret_ini(f->ini);
+    if (f->ini == NULL)
+        /* fila ficou vazia? */
+        f->fim = NULL;
+    return v;
+}
+
+int vazia(Fila* f)
+{
+    return (f->ini==NULL);
+}
+
+void libera(Fila* f)
+{
+    No* q = f->ini;
+    while (q!=NULL)
+        {
+        No* t = q->prox;
+        free(q);
+        q = t;
+        }
+    free(f);
+}
+
+/* imprime: versão com lista */
+void imprime(Fila* f)
+{
+    No* q;
+    for (q=f->ini; q!=NULL; q=q->prox)
+        printf("%.2f\n",q->info);
 }
