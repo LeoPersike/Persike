@@ -27,6 +27,7 @@
 
 // Definicao de estrutura
 struct circulo {
+    char nome[20];
     int cx;
     int cy;
 };
@@ -37,9 +38,9 @@ int compara_centro (const void* p1,const void* p2);
 int busca_centro (const void* p1,const void* p2);
 int busca_linear(const int n,const void* p1,const void* p2); // n = numero da dados, cir = vetor de estruturas, p1 = elemento a ser procurado
 void preenche_vetor(const int n,void* p1);
-#define N 5000 // Numero de elementos
-//#define IMPRESSAO
-//#define INSERCAO_MANUAL
+#define N 5 // Numero de elementos
+#define IMPRESSAO
+#define INSERCAO_MANUAL
 
 int main()
 {
@@ -52,18 +53,23 @@ int main()
     #ifdef INSERCAO_MANUAL
     /* Adicionando os circulos */
     //(40,60)
+    strcpy(circulos[0].nome,"Leonardo");
     circulos[0].cx = 40;
     circulos[0].cy = 60;
     //(200,200)
+    strcpy(circulos[1].nome,"Augusto");
     circulos[1].cx = 200;
     circulos[1].cy = 100;
     //(70,100)
+    strcpy(circulos[2].nome,"Barbara");
     circulos[2].cx = 70;
     circulos[2].cy = 100;
     //(30,80)
+    strcpy(circulos[3].nome,"Marcio");
     circulos[3].cx = 30;
     circulos[3].cy = 80;
     //(150,45)
+    strcpy(circulos[4].nome,"Jaicimara");
     circulos[4].cx = 150;
     circulos[4].cy = 45;
     #else
@@ -74,16 +80,16 @@ int main()
     /* Imprimindo os circulos em relacao ao ordenamento pelo centro*/
     printf("\nImpressao sem ordenamento pelo centro");
     for(aux=0;aux<N;aux++)
-        printf("\n Circulo Centro em (%d,%d).",circulos[aux].cx,circulos[aux].cy);
+        printf("\n Circulo %s Centro em (%d,%d).",circulos[aux].nome,circulos[aux].cx,circulos[aux].cy);
     /* Ordenando os circulos */
     qsort(circulos,N,sizeof(Circulo),compara_centro);
     printf("\nImpressao depois de ordenamento generico quicksort pelo centro");
     for(aux=0;aux<N;aux++)
-        printf("\n Circulo Centro em (%d,%d).",circulos[aux].cx,circulos[aux].cy);
+        printf("\n Circulo %s Centro em (%d,%d).",circulos[aux].nome,circulos[aux].cx,circulos[aux].cy);
     #endif
 
     /* Buscando o circulo pelo centro com bsearch */
-    int vet_busca[2] = {3600,3600};
+    int vet_busca[2] = {2,2};
 
     void* ptr;
     start = clock();
@@ -172,6 +178,7 @@ void preenche_vetor(int n,void* p1)
 
     for(aux=0;aux<n;aux++)
     {
+        strcpy(cir[aux].nome,"Automatico");
         cir[aux].cx = aux;
         cir[aux].cy = aux;
     }
