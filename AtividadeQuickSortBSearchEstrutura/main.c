@@ -56,7 +56,7 @@ int main()
     /* Estrutura para ser utilizada como parametro de busca */
     Circle valor_busca;
     #ifdef MANUAL_INPUT // Busca circulo determinado
-    strcpy(valor_busca.nome,"Leonardo");
+    strcpy(valor_busca.nome,"Barbara");
     valor_busca.cx = 70;
     valor_busca.cy = 100;
     #else // Busca o penultimo circulo (pois N-1 = circulo[4999] que e o ultimo
@@ -100,9 +100,9 @@ int main()
     end = clock();
     time_spent = ((double) (end - start)) / CLOCKS_PER_SEC;
     if (ptr == NULL)
-        printf("\nElemento nao encontrado com bsearch. Tempo gasto %f segundos.",time_spent);
+        printf("\nElemento nao encontrado pelo centro com bsearch. Tempo gasto %f segundos.",time_spent);
     else
-        printf("\nElemento encontrado com bsearch no indice %ld. Tempo gasto %f segundos.",ptr-circulos,time_spent);
+        printf("\nElemento encontrado pelo centro com bsearch no indice %ld. Tempo gasto %f segundos.",ptr-circulos,time_spent);
 
     /* Buscar circulo com busca linear */
     int indice_encontrado;
@@ -111,12 +111,20 @@ int main()
     end = clock();
     time_spent = ((double) (end - start)) / CLOCKS_PER_SEC;
     if (indice_encontrado == -1)
-        printf("\nElemento nao encontrado com busca linear. Tempo gasto %f segundos.",time_spent);
+        printf("\nElemento nao encontrado pelo centro com busca linear. Tempo gasto %f segundos.",time_spent);
     else
-        printf("\nElemento encontrado com busca linear no indice %d. Tempo gasto %f segundos.", indice_encontrado,time_spent);
+        printf("\nElemento encontrado pelo centro com busca linear no indice %d. Tempo gasto %f segundos.", indice_encontrado,time_spent);
 
     /* Ordenamento os circulos com qsort por ordem de nome */
     qsort(circulos,N,sizeof(Circle),compara_nome);
+
+    /* Buscando circulo pelo nome */
+    Circle* ptr2;
+    ptr2 = bsearch(&valor_busca,circulos,N,sizeof(Circle),compara_nome);
+    if (ptr2 == NULL)
+        printf("\nElemento nao encontrado pelo nome com bsearch.");
+    else
+        printf("\nElemento encontrado pelo nome com bsearch no indice %ld.",ptr2-circulos);
 
     return 0;
 }
