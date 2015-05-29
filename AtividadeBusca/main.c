@@ -35,12 +35,21 @@ typedef struct circulo Circulo;
 // Prototipos
 int compara_centro (const void* p1,const void* p2);
 int busca_centro (const void* p1,const void* p2);
-#define N 5 // Numero de elementos
+int busca_linear(const int n,const void* p1,const void* p2); // n = numero da dados, cir = vetor de estruturas, p1 = elemento a ser procurado
+void preenche_vetor(const int n,void* p1);
+#define N 5000 // Numero de elementos
+//#define IMPRESSAO
+//#define INSERCAO_MANUAL
 
 int main()
 {
+    // Variaveis para medir tempo nas funcoes de busca
+    clock_t start, end;
+    double tempo_gasto;
+
     Circulo circulos[N];
     int aux;
+    #ifdef INSERCAO_MANUAL
     /* Adicionando os circulos */
     //(40,60)
     circulos[0].cx = 40;
@@ -57,7 +66,11 @@ int main()
     //(150,45)
     circulos[4].cx = 150;
     circulos[4].cy = 45;
+    #else
+    preenche_vetor(N,circulos);
+    #endif
 
+    #ifdef IMPRESSAO
     /* Imprimindo os circulos em relacao ao ordenamento pelo centro*/
     printf("\nImpressao sem ordenamento pelo centro");
     for(aux=0;aux<N;aux++)
@@ -67,17 +80,37 @@ int main()
     printf("\nImpressao depois de ordenamento generico quicksort pelo centro");
     for(aux=0;aux<N;aux++)
         printf("\n Circulo Centro em (%d,%d).",circulos[aux].cx,circulos[aux].cy);
+    #endif
 
     /* Buscando o circulo pelo centro com bsearch */
-    int vet_busca[2] = {200,100};
+    int vet_busca[2] = {3600,3600};
 
     void* ptr;
+    start = clock();
     ptr = bsearch(vet_busca,circulos,N,sizeof(Circulo),busca_centro);
+    end = clock();
+    tempo_gasto = ((double) (end - start)) / CLOCKS_PER_SEC;
+    printf("\nBusca com bsearch levou %f segundos.", tempo_gasto);
 
     if (ptr == NULL)
         printf("\n\nElemento nao encontrado com bsearch.\n");
     else
         printf("\n\nElemento encontrado com bsearch no endereco: %p\n", ptr);
+
+
+    /* Buscando o circulo pelo centro com busca linear */
+    int busca_res;
+    start = clock();
+    busca_res = busca_linear(N,circulos,vet_busca); // n = numero da dados, cir = vetor de estruturas, p1 = elemento a ser procurado
+    end = clock();
+    tempo_gasto = ((double) (end - start)) / CLOCKS_PER_SEC;
+    printf("\nBusca com busca linear levou %f segundos.", tempo_gasto);
+
+    if (busca_res == 0)
+        printf("\n\nElemento nao encontrado com busca linear.");
+    else
+        printf("\nElemento encontrado com busca linear no indice %d",busca_res);
+
 
     return 0;
 }
@@ -114,3 +147,33 @@ int busca_centro (const void* p1,const void* p2)
     else if( centro[0] > cir->cx) return 1; // Verifica X
     else return 0;
 }
+
+// Funcao para procurar centro em uma busca linear
+int busca_linear(const int n,const void* p1,const void* p2) // n = numero da dados, p1 = vetor de estruturas, p2 = objeto a ser procurado
+{
+    int aux;
+    int* centro = (int*) p2;
+    Circulo* cir = (Circulo*) p1;
+
+    for(aux=0;aux<n;aux++)
+    {
+        if(cir[aux].cx == centro[0])
+            if(cir[aux].cy == centro[1])
+                return aux;
+    }
+    return 0;
+}
+
+// Funcao para preencher um vetor de estruturas circulo
+void preenche_vetor(int n,void* p1)
+{
+    int aux;
+    Circulo* cir = (Circulo*) p1;
+
+    for(aux=0;aux<n;aux++)
+    {
+        cir[aux].cx = aux;
+        cir[aux].cy = aux;
+    }
+}
+
