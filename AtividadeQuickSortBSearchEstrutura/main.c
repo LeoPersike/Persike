@@ -41,6 +41,7 @@ typedef struct circulo Circle;
 
 /***************** Prototipo de funcoes *****************/
 int compara_centro(const void* p1,const void* p2);
+int compara_nome(const void* p1,const void* p2);
 int busca_linear(int num,const void* p1,const void* p2);
 void preencher_vetor(int num,void* p1);
 
@@ -55,6 +56,7 @@ int main()
     /* Estrutura para ser utilizada como parametro de busca */
     Circle valor_busca;
     #ifdef MANUAL_INPUT // Busca circulo determinado
+    strcpy(valor_busca.nome,"Leonardo");
     valor_busca.cx = 70;
     valor_busca.cy = 100;
     #else // Busca o penultimo circulo (pois N-1 = circulo[4999] que e o ultimo
@@ -69,26 +71,26 @@ int main()
     circulos[0].cx = 40;
     circulos[0].cy = 60;
     //(200,200)
-    strcpy(circulos[0].nome,"Augusto");
+    strcpy(circulos[1].nome,"Augusto");
     circulos[1].cx = 200;
     circulos[1].cy = 100;
     //(70,100)
-    strcpy(circulos[0].nome,"Barbara");
+    strcpy(circulos[2].nome,"Barbara");
     circulos[2].cx = 70;
     circulos[2].cy = 100;
     //(30,80)
-    strcpy(circulos[0].nome,"Marcio");
+    strcpy(circulos[3].nome,"Marcio");
     circulos[3].cx = 30;
     circulos[3].cy = 80;
     //(150,45)
-    strcpy(circulos[0].nome,"Jaicimara");
+    strcpy(circulos[4].nome,"Jaicimara");
     circulos[4].cx = 150;
     circulos[4].cy = 45;
     #else
     preencher_vetor(N,circulos);
     #endif
 
-    /* Organizando os circulos com qsort */
+    /* Organizando os circulos com qsort por ordem do centro */
     qsort(circulos,N,sizeof(Circle),compara_centro);
 
     /* Buscar circulo pelo centro com bsearch */
@@ -112,12 +114,16 @@ int main()
         printf("\nElemento nao encontrado com busca linear. Tempo gasto %f segundos.",time_spent);
     else
         printf("\nElemento encontrado com busca linear no indice %d. Tempo gasto %f segundos.", indice_encontrado,time_spent);
+
+    /* Ordenamento os circulos com qsort por ordem de nome */
+    qsort(circulos,N,sizeof(Circle),compara_nome);
+
     return 0;
 }
 
 /***************** Funcoes *****************/
-/* Funcao de comparacao de centro para quicksorte e bsearch */
-int compara_centro (const void* p1,const void* p2)
+/* Funcao de comparacao de centro para quicksort e bsearch */
+int compara_centro(const void* p1,const void* p2)
 {
     Circle* c1 = (Circle*) p1;
     Circle* c2 = (Circle*) p2;
@@ -127,6 +133,14 @@ int compara_centro (const void* p1,const void* p2)
     else if((c1->cx) < (c2->cx)) return -1; // Verifica X
     else if((c1->cx) > (c2->cx)) return 1; // Verifica X
     else return 0;
+}
+
+/* Funcao de comparacao de nome para quicksort e bsearch */
+int compara_nome(const void* p1,const void* p2)
+{
+    Circle* c1 = (Circle*) p1;
+    Circle* c2 = (Circle*) p2;
+    return strcmp(c1->nome,c2->nome);
 }
 
 /* Funcao de busca linear de um circulo pelo centro */
