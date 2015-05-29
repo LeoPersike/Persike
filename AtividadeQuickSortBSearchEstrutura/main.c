@@ -28,11 +28,12 @@
 #include <time.h>
 
 /***************** Defines *****************/
-#define N 5000
-//#define MANUAL_INPUT
+#define N 5
+#define MANUAL_INPUT
 
 /***************** Definicao de estruturas *****************/
 struct circulo {
+    char nome[20];
     int cx;
     int cy;
 };
@@ -64,18 +65,23 @@ int main()
     /* Adicionando os circulos */
     #ifdef MANUAL_INPUT
     //(40,60)
+    strcpy(circulos[0].nome,"Leonardo");
     circulos[0].cx = 40;
     circulos[0].cy = 60;
     //(200,200)
+    strcpy(circulos[0].nome,"Augusto");
     circulos[1].cx = 200;
     circulos[1].cy = 100;
     //(70,100)
+    strcpy(circulos[0].nome,"Barbara");
     circulos[2].cx = 70;
     circulos[2].cy = 100;
     //(30,80)
+    strcpy(circulos[0].nome,"Marcio");
     circulos[3].cx = 30;
     circulos[3].cy = 80;
     //(150,45)
+    strcpy(circulos[0].nome,"Jaicimara");
     circulos[4].cx = 150;
     circulos[4].cy = 45;
     #else
@@ -145,6 +151,7 @@ void preencher_vetor(int num,void* p1)
     int aux;
     for(aux=0;aux<num;aux++)
     {
+        strcpy(circulos[aux].nome,"Automatico");
         circulos[aux].cx = aux;
         circulos[aux].cy = aux;
     }
