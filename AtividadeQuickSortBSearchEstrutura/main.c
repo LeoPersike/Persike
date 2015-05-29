@@ -21,28 +21,35 @@
 * IFSC 2015
 ******************************************************/
 
+/***************** Includes *****************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
-/* Defines */
+/***************** Defines *****************/
 #define N 5
 #define manual_input
 
-/* Definicao de estrutura */
+/***************** Definicao de estruturas *****************/
 struct circulo {
     int cx;
     int cy;
 };
 typedef struct circulo Circle;
 
-/* Prototipo de funcoes */
+/***************** Prototipo de funcoes *****************/
 int compara_centro(const void* p1,const void* p2);
 
+/***************** Main *****************/
 int main()
 {
+    /* Vetor de estrutura circulo */
     Circle circulos[N];
+    /* Estrutura para ser utilizada como parametro de busca */
+    Circle valor_busca;
+    valor_busca.cx = 70;
+    valor_busca.cy = 100;
 
     /* Adicionando os circulos */
     //(40,60)
@@ -63,10 +70,18 @@ int main()
 
     /* Organizando os circulos com qsort */
     qsort(circulos,N,sizeof(Circle),compara_centro);
+    /* Buscar circulo pelo centro com bsearch */
+    Circle* ptr;
+    ptr = bsearch(&valor_busca,circulos,N,sizeof(Circle),compara_centro);
+    if (ptr == NULL)
+        printf("\nElemento nao encontrado com bsearch.");
+    else
+        printf("\nElemento encontrado com bsearch no indice %ld.", ptr-circulos);
 
     return 0;
 }
 
+/***************** Funcoes *****************/
 int compara_centro (const void* p1,const void* p2)
 {
     Circle* c1 = (Circle*) p1;
