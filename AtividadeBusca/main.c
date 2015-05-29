@@ -35,6 +35,7 @@ typedef struct circulo Circulo;
 
 // Prototipos
 int compara_centro (const void* p1,const void* p2);
+int compara_nome (const void* p1,const void* p2);
 int busca_centro (const void* p1,const void* p2);
 int busca_linear(const int n,const void* p1,const void* p2); // n = numero da dados, cir = vetor de estruturas, p1 = elemento a ser procurado
 void preenche_vetor(const int n,void* p1);
@@ -118,6 +119,18 @@ int main()
         printf("\nElemento encontrado com busca linear no indice %d",busca_res);
 
 
+    /* Imprimindo os circulos em relacao ao ordenamento pelos nomes*/
+    #ifdef IMPRESSAO
+    printf("\nImpressao sem ordenamento pelo nome");
+    for(aux=0;aux<N;aux++)
+        printf("\n Circulo %s Centro em (%d,%d).",circulos[aux].nome,circulos[aux].cx,circulos[aux].cy);
+    /* Ordenando os circulos */
+    qsort(circulos,N,sizeof(Circulo),compara_nome);
+    printf("\nImpressao depois de ordenamento generico quicksort pelo nome");
+    for(aux=0;aux<N;aux++)
+        printf("\n Circulo %s Centro em (%d,%d).",circulos[aux].nome,circulos[aux].cx,circulos[aux].cy);
+    #endif
+
     return 0;
 }
 
@@ -137,6 +150,14 @@ int compara_centro (const void* p1,const void* p2)
             return 1;
     }
     else return 1; // Troca pois y1 > y2
+}
+
+// Funcao para comparar nomes para usar no qsort
+int compara_nome (const void* p1,const void* p2)
+{
+    Circulo* c1 = (Circulo*) p1;
+    Circulo* c2 = (Circulo*) p2;
+    return strcmp(c1->nome,c2->nome);
 }
 
 // Funcao para procurar centro para utilizar no bsearch
