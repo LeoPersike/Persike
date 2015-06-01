@@ -24,7 +24,7 @@ Arvore* cria(char c, Arvore* sae, Arvore* sad);
 int vazia(Arvore* a);
 void imprime (Arvore* a);
 void imprime_estrutura (Arvore* a);
-
+int altura(Arvore* a);
 
 int main()
 {
@@ -35,6 +35,7 @@ int main()
     imprime(a);
     printf("\n");
     imprime_estrutura(a);
+    printf("\nA altura da arvore e: %d.",altura(a));
     return 0;
 }
 
@@ -89,4 +90,21 @@ void imprime_estrutura(Arvore* a)
             printf("<>");
     }
     printf(">");
+}
+
+// Funcao que retorna a altura de uma arvore
+int altura(Arvore* a)
+{
+    if (vazia(a))
+        return 0;
+    else
+    {
+        int alt_esq = altura(a->dir);
+        int alt_dir = altura(a->esq);
+
+        if(alt_esq > alt_dir)
+            return alt_esq + 1;
+        else
+            return alt_dir + 1;
+    }
 }
