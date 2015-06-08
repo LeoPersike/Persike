@@ -23,19 +23,34 @@ Arvore* inicializa(void);
 Arvore* cria(char c, Arvore* sae, Arvore* sad);
 int vazia(Arvore* a);
 void imprime (Arvore* a);
-void imprime_estrutura (Arvore* a);
+void imprime_preordem(Arvore* a);
+void imprime_simetrico(Arvore* a);
+void imprime_posordem(Arvore* a);
 int altura(Arvore* a);
+int busca (Arvore* a, char c);
 
 int main()
 {
+    char var_busca = 'd';
     Arvore* a = cria('a',
                 cria('b',inicializa(),cria('d', inicializa(), inicializa())
                 ),
                 cria('c',cria('e', inicializa(), inicializa()),cria('f', inicializa(), inicializa())));
+    printf("Impressao normal.\n");
     imprime(a);
-    printf("\n");
-    imprime_estrutura(a);
+    printf("Pre-ordem\n");
+    imprime_preordem(a);
+    printf("Simetrico\n");
+    imprime_simetrico(a);
+    printf("Pos-Ordem\n");
+    imprime_posordem(a);
     printf("\nA altura da arvore e: %d.",altura(a));
+    printf("\nElemento a ser buscado %c. ",var_busca);
+    if(busca(a,var_busca))
+        printf("Elemento encontrado.");
+    else
+        printf("Elemento nao encontrado.");
+
     return 0;
 }
 
@@ -72,22 +87,64 @@ void imprime(Arvore* a)
     }
 }
 
-// Funcao para imprimir a arvore com a estrutura <<>><><><><>
-void imprime_estrutura(Arvore* a)
+// Funcao para imprimir a arvore com a estrutura em ordem raiz-esquerda-direita (Pre-Ordem)
+void imprime_preordem(Arvore* a)
 {
     printf("<");
     if (!vazia(a))
     {
         printf("%c",a->info);
         if(!vazia(a->esq))
-            imprime_estrutura(a->esq);
+            imprime_preordem(a->esq);
         else
             printf("<>");
 
         if(!vazia(a->dir))
-            imprime_estrutura(a->dir);
+            imprime_preordem(a->dir);
         else
             printf("<>");
+    }
+    printf(">");
+}
+
+// Funcao para imprimir a arvore com a estrutura em ordem esquerda-raiz-direita (Ordem Simetrica)
+void imprime_simetrico(Arvore* a)
+{
+    printf("<");
+    if (!vazia(a))
+    {
+        if(!vazia(a->esq))
+            imprime_simetrico(a->esq);
+        else
+            printf("<>");
+
+        printf("%c",a->info);
+
+        if(!vazia(a->dir))
+            imprime_simetrico(a->dir);
+        else
+            printf("<>");
+    }
+    printf(">");
+}
+
+// Funcao para imprimir a arvore com a estrutura em ordem esquerda-direita-raiz (Pos-Ordem)
+void imprime_posordem(Arvore* a)
+{
+    printf("<");
+    if (!vazia(a))
+    {
+        if(!vazia(a->esq))
+            imprime_simetrico(a->esq);
+        else
+            printf("<>");
+
+        if(!vazia(a->dir))
+            imprime_simetrico(a->dir);
+        else
+            printf("<>");
+
+         printf("%c",a->info);
     }
     printf(">");
 }
@@ -107,4 +164,12 @@ int altura(Arvore* a)
         else
             return alt_dir + 1;
     }
+}
+
+// Funcao que busca um elemento na arvore - Retorna 1 para encontrado e 0 para nao encontrado
+int busca (Arvore* a, char c){
+    if (vazia(a)) /* árvore vazia: não encontrou */
+        return 0;
+    else
+        return a->info==c || busca(a->esq,c) || busca(a->dir,c);
 }
