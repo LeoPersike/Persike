@@ -8,14 +8,376 @@
 * IFSC 2015
 ************************************************************/
 
-#include <stdio.h>
-#include <stdlib.h>
 #include "Functions.h"
-#include <allegro5/allegro.h>
-#include <allegro5/allegro_primitives.h>
 
-#define PI 3.14159265
-//********* Funcoes *************
+//******** Variaveis utilizadas para controle do ambiente grafico ***********//
+const int LARGURA_TELA = 1280;
+const int ALTURA_TELA = 720;
+const int BOTAO_A = 50;
+const int BOTAO_L = 250;
+const int desloc =  10;
+
+//********* Variaveis globais graficas **********//
+ALLEGRO_DISPLAY *janela = NULL;
+ALLEGRO_EVENT_QUEUE *fila_eventos = NULL;
+ALLEGRO_FONT *font;
+ALLEGRO_BITMAP *background = NULL;
+
+ALLEGRO_BITMAP *botao_salvar = NULL;
+ALLEGRO_BITMAP *botao_sair = NULL;
+ALLEGRO_BITMAP *botao_criar = NULL;
+// Botoes para programa detectar se deseja adicionar ou remover um item
+ALLEGRO_BITMAP *button_add = NULL;
+ALLEGRO_BITMAP *button_remove = NULL;
+// Botoes para desenho
+ALLEGRO_BITMAP *button_line = NULL;
+ALLEGRO_BITMAP *button_triangle = NULL;
+ALLEGRO_BITMAP *button_triangle_filled = NULL;
+ALLEGRO_BITMAP *button_rectangle = NULL;
+ALLEGRO_BITMAP *button_rectangle_filled = NULL;
+ALLEGRO_BITMAP *button_rectangle_rounded = NULL;
+ALLEGRO_BITMAP *button_rectangle_rounded_filled = NULL;
+ALLEGRO_BITMAP *button_ellipse = NULL;
+ALLEGRO_BITMAP *button_ellipse_filled = NULL;
+ALLEGRO_BITMAP *button_circle = NULL;
+ALLEGRO_BITMAP *button_circle_filled = NULL;
+ALLEGRO_BITMAP *button_arc = NULL;
+
+ALLEGRO_EVENT evento;
+
+//********* Funcoes graficas ***********//
+int graphic_init()
+{
+    if (!al_init())
+    {
+	  fprintf(stderr, "Falha ao inicializar a biblioteca Allegro.\n");
+	  return 0;
+    }
+
+    if (!al_install_keyboard())
+    {
+        fprintf(stderr, "Falha ao inicializar teclado.\n");
+        return 0;
+    }
+
+    if (!al_init_primitives_addon())
+    {
+	  fprintf(stderr, "Falha ao inicializar add-on de primitivas.\n");
+	  return 0;
+    }
+
+    al_init_font_addon();//habilita o uso de fontes
+
+    if (!al_init_ttf_addon())
+    {
+	  fprintf(stderr, "Falha ao inicializar add-on allegro_ttf.\n");
+	  return 0;
+    }
+
+    font = al_load_font("arquivos/DejaVuSans.ttf", 20, 0);
+    if (!font)
+    {
+	  fprintf(stderr, "Falha ao carregar a fonte.\n");
+	  return 0;
+    }
+
+    janela = al_create_display(LARGURA_TELA, ALTURA_TELA);
+    if (!janela)
+    {
+	  fprintf(stderr, "Falha ao criar janela.\n");
+	  return 0;
+    }
+    al_set_window_title(janela, "PK Cad V1.0.");
+    al_set_target_bitmap(al_get_backbuffer(janela));
+    al_clear_to_color(al_map_rgb(255, 255, 0));
+
+    //Mensagem de inicializacao
+    //exibir_texto_centralizado("PK Cad V1.0 esta inicializando.");
+    //al_flip_display();
+
+    // Torna apto o uso de mouse na aplicação
+    if (!al_install_mouse())
+    {
+	  fprintf(stderr, "Falha ao inicializar o mouse.\n");
+	  al_destroy_display(janela);
+	  return 0;
+    }
+
+    // Atribui o cursor padrão do sistema para ser usado
+    if (!al_set_system_mouse_cursor(janela, ALLEGRO_SYSTEM_MOUSE_CURSOR_DEFAULT))
+    {
+	  fprintf(stderr, "Falha ao atribuir ponteiro do mouse.\n");
+	  al_destroy_display(janela);
+	  return 0;
+    }
+
+    fila_eventos = al_create_event_queue();
+    if (!fila_eventos)
+    {
+	  fprintf(stderr, "Falha ao inicializar o fila de eventos.\n");
+	  al_destroy_display(janela);
+	  return 0;
+    }
+
+    // Dizemos que vamos tratar os eventos vindos do mouse e do teclado
+    al_register_event_source(fila_eventos, al_get_mouse_event_source());
+    al_register_event_source(fila_eventos, al_get_keyboard_event_source());
+
+    // Alocamos o background
+    background = al_create_bitmap(LARGURA_TELA, ALTURA_TELA);
+    if (!background) {
+        fprintf(stderr, "Falha ao criar background.\n");
+        al_destroy_bitmap(background);
+        al_destroy_display(janela);
+        return 0;
+    }
+    background = al_create_bitmap(LARGURA_TELA, ALTURA_TELA);
+
+    // Alocacao dos botes
+    //botao_sair  = al_create_bitmap(BOTAO_L, BOTAO_A);
+    //botao_criar = al_create_bitmap(BOTAO_L, BOTAO_A);
+    //botao_salvar = al_create_bitmap(BOTAO_L, BOTAO_A);
+
+    // Alocacao dos botoes
+    button_line = al_create_bitmap(BOTAO_L, BOTAO_A);
+    button_triangle = al_create_bitmap(BOTAO_L, BOTAO_A);
+    button_triangle_filled = al_create_bitmap(BOTAO_L, BOTAO_A);
+    button_rectangle = al_create_bitmap(BOTAO_L, BOTAO_A);
+    button_rectangle_filled = al_create_bitmap(BOTAO_L, BOTAO_A);
+    button_rectangle_rounded = al_create_bitmap(BOTAO_L, BOTAO_A);
+    button_rectangle_rounded_filled = al_create_bitmap(BOTAO_L, BOTAO_A);
+    button_ellipse = al_create_bitmap(BOTAO_L, BOTAO_A);
+    button_ellipse_filled = al_create_bitmap(BOTAO_L, BOTAO_A);
+    button_circle = al_create_bitmap(BOTAO_L, BOTAO_A);
+    button_circle_filled = al_create_bitmap(BOTAO_L, BOTAO_A);
+    button_arc = al_create_bitmap(BOTAO_L, BOTAO_A);
+
+    //if (!botao_sair || !botao_criar || !botao_salvar) {
+    if(!button_line || !button_triangle || !button_triangle_filled || !button_rectangle || !button_rectangle_filled || !button_rectangle_rounded
+     || !button_rectangle_rounded_filled || !button_ellipse || !button_ellipse_filled || !button_circle || !button_circle_filled || !button_arc)
+    {
+        fprintf(stderr, "Falha ao criar botoes.\n");
+        al_destroy_bitmap(button_line);
+        al_destroy_bitmap(button_triangle);
+        al_destroy_bitmap(button_triangle_filled);
+        al_destroy_bitmap(button_rectangle);
+        al_destroy_bitmap(button_rectangle_filled);
+        al_destroy_bitmap(button_rectangle_rounded);
+        al_destroy_bitmap(button_rectangle_rounded_filled);
+        al_destroy_bitmap(button_ellipse);
+        al_destroy_bitmap(button_ellipse_filled);
+        al_destroy_bitmap(button_circle);
+        al_destroy_bitmap(button_circle_filled);
+        al_destroy_bitmap(button_arc);
+        al_destroy_display(janela);
+        return 0;
+    }
+    al_set_target_bitmap(background);
+    al_clear_to_color(al_map_rgb(255, 255, 255));
+
+    // Dando forma aos botoes
+    al_set_target_bitmap(button_line);
+    al_clear_to_color(al_map_rgb(255, 255, 255));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Linha simples");
+
+    al_set_target_bitmap(button_triangle);
+    al_clear_to_color(al_map_rgb(255, 255, 255));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Triangulo simples");
+
+    al_set_target_bitmap(button_triangle_filled);
+    al_clear_to_color(al_map_rgb(255, 255, 255));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Triangulo colorido");
+
+    al_set_target_bitmap(button_rectangle);
+    al_clear_to_color(al_map_rgb(255, 255, 255));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Retangulo simples");
+
+    al_set_target_bitmap(button_rectangle_filled);
+    al_clear_to_color(al_map_rgb(255, 255, 255));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Retangulo colorido");
+
+    al_set_target_bitmap(button_rectangle_rounded);
+    al_clear_to_color(al_map_rgb(255, 255, 255));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Retangulo Arredondado");
+
+    al_set_target_bitmap(button_rectangle_rounded_filled);
+    al_clear_to_color(al_map_rgb(255, 255, 255));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Retangulo A. colorido");
+
+    al_set_target_bitmap(button_ellipse);
+    al_clear_to_color(al_map_rgb(255, 255, 255));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Elipse simples");
+
+    al_set_target_bitmap(button_ellipse_filled);
+    al_clear_to_color(al_map_rgb(255, 255, 255));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Elipse colorida");
+
+    al_set_target_bitmap(button_circle);
+    al_clear_to_color(al_map_rgb(255, 255, 255));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Circulo simples");
+
+    al_set_target_bitmap(button_circle_filled);
+    al_clear_to_color(al_map_rgb(255, 255, 255));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Circulo colorido");
+
+    al_set_target_bitmap(button_arc);
+    al_clear_to_color(al_map_rgb(255, 255, 255));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Arco");
+
+    return 1;
+}
+
+void fechajanela(){
+    /*Desaloca os recursos utilizados na aplicação*/
+    al_destroy_display(janela);
+    al_destroy_event_queue(fila_eventos);
+
+	printf("\n Aplicacao encerrada.");
+	//system("sleep 1");
+}
+
+void exibir_texto_centralizado(char msg[20]) {
+        al_set_target_bitmap(al_get_backbuffer(janela));
+        al_draw_text(font, al_map_rgb(0, 0, 0), LARGURA_TELA / 2,
+                     (ALTURA_TELA - al_get_font_ascent(font)) / 2,
+                     ALLEGRO_ALIGN_CENTRE, msg);
+}
+
+void atualiza_tela(bool *pause) {
+        char msg[5];
+        sprintf(msg, "%.1f", 1/((double) (end - begin) / CLOCKS_PER_SEC));
+       // msg = (char[10])((double) (end - begin) / CLOCKS_PER_SEC);
+        al_set_target_bitmap(al_get_backbuffer(janela));
+        al_draw_bitmap(background, 0, 0, 0);
+        al_draw_bitmap(button_line, LARGURA_TELA - BOTAO_L,ALTURA_TELA - BOTAO_A -desloc,0);
+        al_draw_bitmap(button_triangle, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 2*BOTAO_A -desloc,0);
+        al_draw_bitmap(button_triangle_filled, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 3*BOTAO_A -desloc,0);
+        al_draw_bitmap(button_rectangle, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 4*BOTAO_A -desloc,0);
+        al_draw_bitmap(button_rectangle_filled, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 5*BOTAO_A -desloc,0);
+        al_draw_bitmap(button_rectangle_rounded, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 6*BOTAO_A -desloc,0);
+        al_draw_bitmap(button_rectangle_rounded_filled, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 7*BOTAO_A -desloc,0);
+        al_draw_bitmap(button_ellipse, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 8*BOTAO_A -desloc,0);
+        al_draw_bitmap(button_ellipse_filled, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 9*BOTAO_A -desloc,0);
+        al_draw_bitmap(button_circle, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 10*BOTAO_A -desloc,0);
+        al_draw_bitmap(button_circle_filled, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 11*BOTAO_A -desloc,0);
+        al_draw_bitmap(button_arc, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 12*BOTAO_A -desloc,0);
+        al_draw_text(font, al_map_rgb(255, 255, 255), 10, 10, 0 , *pause== 0?msg:"Pausado");
+        //printf("FPS = %.2f\n",1/((double) (end - begin) / CLOCKS_PER_SEC));
+        al_flip_display();
+}
+
+//********* Funcoes do programa *************//
+
+//********* Funcao principal ****************//
+int cad_system(void)
+{
+    int state = WAITING; // State
+    // Variavel state configura uma maquina de estados - Definicoes em Functions.h
+    bool pause = 0;
+    while(state!=EXIT)
+    {
+        begin = clock();
+        while (!al_is_event_queue_empty(fila_eventos))
+        {
+            al_wait_for_event(fila_eventos, &evento);
+            if (evento.type == ALLEGRO_EVENT_KEY_DOWN)
+            {
+                if (evento.keyboard.keycode == ALLEGRO_KEY_ESCAPE)
+                {
+                    state = EXIT;
+                    printf("%s\n", "KEY");
+                }
+            }
+            else if (evento.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
+            {
+                if (evento.mouse.x >= LARGURA_TELA - BOTAO_L)
+                {
+                    if(evento.mouse.y <= ALTURA_TELA - 0*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - BOTAO_A -desloc)
+                    {
+                        state = WAITING;
+                        printf("\nBotao linha simples");
+                    }
+                    if(evento.mouse.y <= ALTURA_TELA - 1*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 2*BOTAO_A -desloc)
+                    {
+                        state = WAITING;
+                        printf("\nBotao triangulo simples");
+                    }
+                    if(evento.mouse.y <= ALTURA_TELA - 2*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 3*BOTAO_A -desloc)
+                    {
+                        state = WAITING;
+                        printf("\nBotao triangulo colorido");
+                    }
+                    if(evento.mouse.y <= ALTURA_TELA - 3*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 4*BOTAO_A -desloc)
+                    {
+                        state = WAITING;
+                        printf("\nBotao retangulo simples");
+                    }
+                    if(evento.mouse.y <= ALTURA_TELA - 4*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 5*BOTAO_A -desloc)
+                    {
+                        state = WAITING;
+                        printf("\nBotao retangulo colorido");
+                    }
+                    if(evento.mouse.y <= ALTURA_TELA - 5*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 6*BOTAO_A -desloc)
+                    {
+                        state = WAITING;
+                        printf("\nBotao retangulo arredondado");
+                    }
+                    if(evento.mouse.y <= ALTURA_TELA - 6*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 7*BOTAO_A -desloc)
+                    {
+                        state = WAITING;
+                        printf("\nBotao retangulo arredondado colorido");
+                    }
+                    if(evento.mouse.y <= ALTURA_TELA - 7*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 8*BOTAO_A -desloc)
+                    {
+                        state = WAITING;
+                        printf("\nBotao elipse simples");
+                    }
+                    if(evento.mouse.y <= ALTURA_TELA - 8*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 9*BOTAO_A -desloc)
+                    {
+                        state = WAITING;
+                        printf("\nBotao elipse colorida");
+                    }
+                    if(evento.mouse.y <= ALTURA_TELA - 9*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 10*BOTAO_A -desloc)
+                    {
+                        state = WAITING;
+                        printf("\nBotao circulo simples");
+                    }
+                    if(evento.mouse.y <= ALTURA_TELA - 10*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 11*BOTAO_A -desloc)
+                    {
+                        state = WAITING;
+                        printf("\nBotao circulo colorido");
+                    }
+                    if(evento.mouse.y <= ALTURA_TELA - 11*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 12*BOTAO_A -desloc)
+                    {
+                        state = WAITING;
+                        printf("\nBotao arco");
+                    }
+                }
+            }
+        }
+
+    while(((double) (end - begin) / CLOCKS_PER_SEC)<(1./FPS) && !pause) //define FPS maxima
+        end = clock();
+
+    atualiza_tela(&pause);
+    }
+
+    return state;
+}
+
+//*********** Funcoes de insercao e remocao de elementso ************//
 void insere_linha(float x1,float y1,float x2,float y2,float corR,float corG,float corB,float thick,ListaGen** Lista)
 {
     ListaGen* novo = (ListaGen*) malloc(sizeof(ListaGen));

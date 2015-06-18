@@ -8,7 +8,28 @@
 * IFSC 2015
 ************************************************************/
 
-//********* Definicoes utilizadas *************/
+//*********** Includes de bibliotecas ****************//
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
+#include <math.h>
+#include <time.h>
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_primitives.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_image.h>
+#include <allegro5/allegro_ttf.h>
+
+#define PI 3.14159265
+#define FPS 60
+
+//********* Variaveis para marcacao de tempo *************//
+clock_t begin, end;
+double time_spent1,time_spent2,time_spent3;
+
+
+//********* Definicoes para insercao e remocao *************/
 #define LINE 0
 #define TRIANGLE 1
 #define RECTANGLE 2
@@ -18,6 +39,28 @@
 #define SPLINE 6
 #define RIBBON 7
 
+//******** Definicoes para controle de estado *************/
+// Control states
+#define EXIT 0
+#define WAITING 1
+// Draw states
+#define DRAW_LINE 2
+#define DRAW_TRIANGLE 3
+#define DRAW_RECTANGLE 4
+#define DRAW_ELIPSE 5
+#define DRAW_CIRCLE 6
+#define DRAW_ARC 7
+#define DRAW_SPLINE 8
+#define DRAW_RIBBON 9
+// Remove states
+#define REMOVE_LINE 10
+#define REMOVE_TRIANGLE 11
+#define REMOVE_RECTANGLE 12
+#define REMOVE_ELIPSE 13
+#define REMOVE_CIRCLE 14
+#define REMOVE_ARC 15
+#define REMOVE_SPLINE 16
+#define REMOVE_RIBBON 17
 
 //********* Funcoes allegro draw **************/
 // As funcoes podem ser encontradas no manual do allegro 5, disponivel em https://www.allegro.cc/manual/5/primitives.html
@@ -141,6 +184,14 @@ struct arc {
 // Definir a estrutura SPLINE
 // Definir a estrutura RIBBON
 
+//********* Funcoes graficas *************//
+int graphic_init(void);
+void fechajanela(void);
+void exibir_texto_centralizado(char msg[20]);
+void atualiza_tela(bool *pause);
+
+//******** Funcao principal do program ***********//
+int cad_system(void);
 
 //********* Prototipagem das funcoes ************/
 void insere_linha(float x1,float y1,float x2,float y2,float corR,float corG,float corB,float thick,ListaGen** Lista);

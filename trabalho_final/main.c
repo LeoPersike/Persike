@@ -14,39 +14,29 @@
 * IFSC 2015
 ******************************************************/
 
-#define DEBUG
+//#define DEBUG
 
 #include <stdio.h>
 #include <stdlib.h>
 #include "Functions.h"
 #include <allegro5/allegro.h>
-#include <allegro5/allegro_primitives.h>
 
 int main()
 {
     // Cria ponteiro para lista com os elementos
+    int aux_state = WAITING;
     ListaGen* Lista = NULL;
 
-    // Inicializacao da janela do Allegro
-    ALLEGRO_DISPLAY *janela = NULL;
-    if (!al_init())
-    {
-        fprintf(stderr, "Falha ao inicializar a Allegro 5\n");
+    // Inicia ambiente grafico
+    if(graphic_init())
+        printf("\nInterface grafica inicializada.");
+    else
+        {
+        printf("\nProblema na inicializacao da interface grafica!");
         return -1;
-    }
+        }
 
-    janela = al_create_display(1280, 720);
-    if (!janela)
-    {
-        fprintf(stderr, "Falha ao criar a janela\n");
-        return -1;
-    }
-
-    // Inicializando primitives para impressao na tela
-    al_init_primitives_addon();
-
-
-    // Insercao de figuras
+    // Insercao de figuras manual (para teste)
     insere_linha(500,500,630,630,0,255,0,5,&Lista);
     insere_triangulo(90,90,130,130,50,130,0,0,255,10,&Lista);
     insere_retangulo(40,55,250,250,5,5,255,0,255,5,&Lista);
@@ -61,14 +51,36 @@ int main()
     printf("\nTamanho de um elemento Elipse: %ld",sizeof(Elip));
     printf("\nTamanho de um elemento Circulo: %ld",sizeof(Circ));
     printf("\nTamanho de um elemento Arco: %ld",sizeof(Arco));
+    imprime_lista(Lista); // Imprime lista no console
     #endif
-    imprime_lista(Lista);
 
-    // Imprime desenhos na tela e aguarda 10 segundos
-    imprime_lista_display(Lista);
-    al_flip_display(); // Atualiza tela
-    al_rest(10.0);
-    al_destroy_display(janela);
+    while(aux_state != EXIT)
+    {
+        aux_state = cad_system();
+        switch (aux_state) {
+            case EXIT: break;
+            case WAITING: break;
+            case DRAW_LINE: break;
+            case DRAW_TRIANGLE: break;
+            case DRAW_RECTANGLE: break;
+            case DRAW_ELIPSE: break;
+            case DRAW_CIRCLE: break;
+            case DRAW_ARC: break;
+            case DRAW_SPLINE: break;
+            case DRAW_RIBBON: break;
+            case REMOVE_LINE: break;
+            case REMOVE_TRIANGLE: break;
+            case REMOVE_RECTANGLE: break;
+            case REMOVE_ELIPSE: break;
+            case REMOVE_CIRCLE: break;
+            case REMOVE_ARC: break;
+            case REMOVE_SPLINE: break;
+            case REMOVE_RIBBON: break;
+            default: break;
+        }
+    }
 
+    fechajanela();
+    printf("\nO software PK Cad V1.0 foi finalizado como sucesso.");
     return 0;
 }
