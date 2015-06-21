@@ -14,8 +14,8 @@
 const int LARGURA_TELA = 1280;
 const int ALTURA_TELA = 720;
 const int BOTAO_A = 50;
-const int BOTAO_L = 250;
-const int desloc =  10;
+const int BOTAO_L = 50;
+const int desloc =  0;
 
 //********* Variaveis globais graficas **********//
 ALLEGRO_DISPLAY *janela = NULL;
@@ -23,9 +23,6 @@ ALLEGRO_EVENT_QUEUE *fila_eventos = NULL;
 ALLEGRO_FONT *font;
 ALLEGRO_BITMAP *background = NULL;
 
-ALLEGRO_BITMAP *botao_salvar = NULL;
-ALLEGRO_BITMAP *botao_sair = NULL;
-ALLEGRO_BITMAP *botao_criar = NULL;
 // Botoes para programa detectar se deseja adicionar ou remover um item
 ALLEGRO_BITMAP *button_add = NULL;
 ALLEGRO_BITMAP *button_remove = NULL;
@@ -42,7 +39,19 @@ ALLEGRO_BITMAP *button_ellipse_filled = NULL;
 ALLEGRO_BITMAP *button_circle = NULL;
 ALLEGRO_BITMAP *button_circle_filled = NULL;
 ALLEGRO_BITMAP *button_arc = NULL;
+// Botoes para cores
+ALLEGRO_BITMAP *BLACK = NULL;
+ALLEGRO_BITMAP *BROWN = NULL;
+ALLEGRO_BITMAP *RED = NULL;
+ALLEGRO_BITMAP *ORANGE = NULL;
+ALLEGRO_BITMAP *YELLOW = NULL;
+ALLEGRO_BITMAP *GREEN = NULL;
+ALLEGRO_BITMAP *BLUE = NULL;
+ALLEGRO_BITMAP *VIOLET = NULL;
+ALLEGRO_BITMAP *GRAY = NULL;
+ALLEGRO_BITMAP *WHITE = NULL;
 
+//Variavel para eventos do allegro
 ALLEGRO_EVENT evento;
 
 //********* Funcoes graficas ***********//
@@ -133,12 +142,11 @@ int graphic_init()
     }
     background = al_create_bitmap(LARGURA_TELA, ALTURA_TELA);
 
-    // Alocacao dos botes
-    //botao_sair  = al_create_bitmap(BOTAO_L, BOTAO_A);
-    //botao_criar = al_create_bitmap(BOTAO_L, BOTAO_A);
-    //botao_salvar = al_create_bitmap(BOTAO_L, BOTAO_A);
+    // Alocacao dos botoes de add e remove
+    button_add = al_create_bitmap(2*BOTAO_L, BOTAO_A);
+    button_remove = al_create_bitmap(2*BOTAO_L, BOTAO_A);
 
-    // Alocacao dos botoes
+    // Alocacao dos botoes de desenho
     button_line = al_create_bitmap(BOTAO_L, BOTAO_A);
     button_triangle = al_create_bitmap(BOTAO_L, BOTAO_A);
     button_triangle_filled = al_create_bitmap(BOTAO_L, BOTAO_A);
@@ -152,11 +160,28 @@ int graphic_init()
     button_circle_filled = al_create_bitmap(BOTAO_L, BOTAO_A);
     button_arc = al_create_bitmap(BOTAO_L, BOTAO_A);
 
+    // Alocacao dos botoes de cores
+    BLACK = al_create_bitmap(BOTAO_L,BOTAO_A);
+    BROWN = al_create_bitmap(BOTAO_L,BOTAO_A);
+    RED = al_create_bitmap(BOTAO_L,BOTAO_A);
+    ORANGE = al_create_bitmap(BOTAO_L,BOTAO_A);
+    YELLOW = al_create_bitmap(BOTAO_L,BOTAO_A);
+    GREEN = al_create_bitmap(BOTAO_L,BOTAO_A);
+    BLUE = al_create_bitmap(BOTAO_L,BOTAO_A);
+    VIOLET = al_create_bitmap(BOTAO_L,BOTAO_A);
+    GRAY = al_create_bitmap(BOTAO_L,BOTAO_A);
+    WHITE = al_create_bitmap(BOTAO_L,BOTAO_A);
+
     //if (!botao_sair || !botao_criar || !botao_salvar) {
     if(!button_line || !button_triangle || !button_triangle_filled || !button_rectangle || !button_rectangle_filled || !button_rectangle_rounded
-     || !button_rectangle_rounded_filled || !button_ellipse || !button_ellipse_filled || !button_circle || !button_circle_filled || !button_arc)
+     || !button_rectangle_rounded_filled || !button_ellipse || !button_ellipse_filled || !button_circle || !button_circle_filled || !button_arc
+     || !BLACK || !BROWN || !RED || !ORANGE || !YELLOW || !GREEN || !BLUE || !VIOLET || !GRAY || !WHITE || !button_add || !button_remove)
     {
         fprintf(stderr, "Falha ao criar botoes.\n");
+        // Deslocando botoes de add e remove
+        al_destroy_bitmap(button_add);
+        al_destroy_bitmap(button_remove);
+        // Desalocando botoes de desenho
         al_destroy_bitmap(button_line);
         al_destroy_bitmap(button_triangle);
         al_destroy_bitmap(button_triangle_filled);
@@ -169,72 +194,137 @@ int graphic_init()
         al_destroy_bitmap(button_circle);
         al_destroy_bitmap(button_circle_filled);
         al_destroy_bitmap(button_arc);
+        // Desalocando botoes de cores
+        al_destroy_bitmap(BLACK);
+        al_destroy_bitmap(BROWN);
+        al_destroy_bitmap(RED);
+        al_destroy_bitmap(ORANGE);
+        al_destroy_bitmap(YELLOW);
+        al_destroy_bitmap(GREEN);
+        al_destroy_bitmap(BLUE);
+        al_destroy_bitmap(VIOLET);
+        al_destroy_bitmap(GRAY);
+        al_destroy_bitmap(WHITE);
+        // Desalocando janela
         al_destroy_display(janela);
         return 0;
     }
     al_set_target_bitmap(background);
     al_clear_to_color(al_map_rgb(255, 255, 255));
 
-    // Dando forma aos botoes
+
+    // Dando forma aos botoes de adicionar e remover
+    al_set_target_bitmap(button_add);
+    al_clear_to_color(al_map_rgb(255, 255, 255));
+    al_draw_rectangle(0,0, 2*BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+    al_draw_text(font, al_map_rgb(0, 0, 0), 2*BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "ADD");
+
+    al_set_target_bitmap(button_remove);
+    al_clear_to_color(al_map_rgb(255, 255, 255));
+    al_draw_rectangle(0,0, 2*BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+    al_draw_text(font, al_map_rgb(0, 0, 0), 2*BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "REMOVE");
+
+    // Dando forma aos botoes de desenho
     al_set_target_bitmap(button_line);
     al_clear_to_color(al_map_rgb(255, 255, 255));
-    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
-    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Linha simples");
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "");
 
     al_set_target_bitmap(button_triangle);
     al_clear_to_color(al_map_rgb(255, 255, 255));
-    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
-    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Triangulo simples");
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "");
 
     al_set_target_bitmap(button_triangle_filled);
     al_clear_to_color(al_map_rgb(255, 255, 255));
-    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
-    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Triangulo colorido");
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "");
 
     al_set_target_bitmap(button_rectangle);
     al_clear_to_color(al_map_rgb(255, 255, 255));
-    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
-    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Retangulo simples");
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "");
 
     al_set_target_bitmap(button_rectangle_filled);
     al_clear_to_color(al_map_rgb(255, 255, 255));
-    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
-    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Retangulo colorido");
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "");
 
     al_set_target_bitmap(button_rectangle_rounded);
     al_clear_to_color(al_map_rgb(255, 255, 255));
-    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
-    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Retangulo Arredondado");
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "");
 
     al_set_target_bitmap(button_rectangle_rounded_filled);
     al_clear_to_color(al_map_rgb(255, 255, 255));
-    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
-    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Retangulo A. colorido");
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "");
 
     al_set_target_bitmap(button_ellipse);
     al_clear_to_color(al_map_rgb(255, 255, 255));
-    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
-    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Elipse simples");
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "");
 
     al_set_target_bitmap(button_ellipse_filled);
     al_clear_to_color(al_map_rgb(255, 255, 255));
-    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
-    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Elipse colorida");
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "");
 
     al_set_target_bitmap(button_circle);
     al_clear_to_color(al_map_rgb(255, 255, 255));
-    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
-    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Circulo simples");
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "");
 
     al_set_target_bitmap(button_circle_filled);
     al_clear_to_color(al_map_rgb(255, 255, 255));
-    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
-    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Circulo colorido");
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "");
 
     al_set_target_bitmap(button_arc);
     al_clear_to_color(al_map_rgb(255, 255, 255));
-    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),10);
-    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "Arco");
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+    al_draw_text(font, al_map_rgb(0, 0, 0), BOTAO_L / 2,(BOTAO_A - al_get_font_ascent(font)) / 2,ALLEGRO_ALIGN_CENTRE, "");
+
+    // Dando forma aos botoes de cores
+    al_set_target_bitmap(BLACK);
+    al_clear_to_color(al_map_rgb(0,0,0));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+
+    al_set_target_bitmap(BROWN);
+    al_clear_to_color(al_map_rgb(94,28,13));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+
+    al_set_target_bitmap(RED);
+    al_clear_to_color(al_map_rgb(255,0,0));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+
+    al_set_target_bitmap(ORANGE);
+    al_clear_to_color(al_map_rgb(255,116,21));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+
+    al_set_target_bitmap(YELLOW);
+    al_clear_to_color(al_map_rgb(255,217,0));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+
+    al_set_target_bitmap(GREEN);
+    al_clear_to_color(al_map_rgb(0,255,0));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+
+    al_set_target_bitmap(BLUE);
+    al_clear_to_color(al_map_rgb(0,0,255));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+
+    al_set_target_bitmap(VIOLET);
+    al_clear_to_color(al_map_rgb(69,0,68));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+
+    al_set_target_bitmap(GRAY);
+    al_clear_to_color(al_map_rgb(117, 117, 117));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
+
+    al_set_target_bitmap(WHITE);
+    al_clear_to_color(al_map_rgb(255, 255, 255));
+    al_draw_rectangle(0,0, BOTAO_L, BOTAO_A, al_map_rgb(0,0,0),5);
 
     return 1;
 }
@@ -261,18 +351,59 @@ void atualiza_tela(bool *pause) {
        // msg = (char[10])((double) (end - begin) / CLOCKS_PER_SEC);
         al_set_target_bitmap(al_get_backbuffer(janela));
         al_draw_bitmap(background, 0, 0, 0);
-        al_draw_bitmap(button_line, LARGURA_TELA - BOTAO_L,ALTURA_TELA - BOTAO_A -desloc,0);
-        al_draw_bitmap(button_triangle, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 2*BOTAO_A -desloc,0);
-        al_draw_bitmap(button_triangle_filled, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 3*BOTAO_A -desloc,0);
-        al_draw_bitmap(button_rectangle, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 4*BOTAO_A -desloc,0);
-        al_draw_bitmap(button_rectangle_filled, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 5*BOTAO_A -desloc,0);
-        al_draw_bitmap(button_rectangle_rounded, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 6*BOTAO_A -desloc,0);
-        al_draw_bitmap(button_rectangle_rounded_filled, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 7*BOTAO_A -desloc,0);
-        al_draw_bitmap(button_ellipse, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 8*BOTAO_A -desloc,0);
-        al_draw_bitmap(button_ellipse_filled, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 9*BOTAO_A -desloc,0);
-        al_draw_bitmap(button_circle, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 10*BOTAO_A -desloc,0);
-        al_draw_bitmap(button_circle_filled, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 11*BOTAO_A -desloc,0);
-        al_draw_bitmap(button_arc, LARGURA_TELA - BOTAO_L,ALTURA_TELA - 12*BOTAO_A -desloc,0);
+        // Botao linha simples
+        al_draw_bitmap(button_line,LARGURA_TELA-BOTAO_L,ALTURA_TELA-1*BOTAO_A-desloc,0);
+        al_draw_line(1240,696,1270,696,al_map_rgb(0,0,0),2);
+        // Botao triangulo simples
+        al_draw_bitmap(button_triangle,LARGURA_TELA-BOTAO_L,ALTURA_TELA-2*BOTAO_A-desloc,0);
+        al_draw_triangle(1255,636,1244,652,1266,652,al_map_rgb(0,0,0),2);
+        // Botap triangulo colorido
+        al_draw_bitmap(button_triangle_filled,LARGURA_TELA-BOTAO_L,ALTURA_TELA-3*BOTAO_A-desloc,0);
+        al_draw_filled_triangle(1255,586,1244,602,1266,602,al_map_rgb(255,0,0));
+        // Botao retangulo simples
+        al_draw_bitmap(button_rectangle,LARGURA_TELA-BOTAO_L,ALTURA_TELA - 4*BOTAO_A-desloc,0);
+        al_draw_rectangle(1239,536,1270,555,al_map_rgb(0,0,0),2);
+        // Botao retangulo colorido
+        al_draw_bitmap(button_rectangle_filled,LARGURA_TELA-BOTAO_L,ALTURA_TELA-5*BOTAO_A-desloc,0);
+        al_draw_filled_rectangle(1239,486,1270,505,al_map_rgb(0,255,0));
+        // Botao retangulo arredondado
+        al_draw_bitmap(button_rectangle_rounded, LARGURA_TELA-BOTAO_L,ALTURA_TELA-6*BOTAO_A-desloc,0);
+        al_draw_rounded_rectangle(1239,436,1270,455,5,5,al_map_rgb(0,0,0),2);
+        // Botao retangulo arredondado colorido
+        al_draw_bitmap(button_rectangle_rounded_filled,LARGURA_TELA-BOTAO_L,ALTURA_TELA-7*BOTAO_A-desloc,0);
+        al_draw_filled_rounded_rectangle(1239,386,1270,405,5,5,al_map_rgb(0,0,255));
+        // Botao eclipse simples
+        al_draw_bitmap(button_ellipse,LARGURA_TELA-BOTAO_L,ALTURA_TELA-8*BOTAO_A-desloc,0);
+        al_draw_ellipse(1255,346,17,9,al_map_rgb(0,0,0),2);
+        // Botao eclipse colorido
+        al_draw_bitmap(button_ellipse_filled,LARGURA_TELA-BOTAO_L,ALTURA_TELA-9*BOTAO_A-desloc,0);
+        al_draw_filled_ellipse(1255,296,17,9,al_map_rgb(255,255,0));
+        // Botao circulo
+        al_draw_bitmap(button_circle, LARGURA_TELA-BOTAO_L,ALTURA_TELA-10*BOTAO_A-desloc,0);
+        al_draw_circle(1255,246,16,al_map_rgb(0,0,0),2);
+        // Botao circulo coorido
+        al_draw_bitmap(button_circle_filled,LARGURA_TELA-BOTAO_L,ALTURA_TELA-11*BOTAO_A-desloc,0);
+        al_draw_filled_circle(1255,196,16,al_map_rgb(69,0,68));
+        // Botao arco
+        al_draw_bitmap(button_arc,LARGURA_TELA-BOTAO_L,ALTURA_TELA-12*BOTAO_A-desloc,0);
+        al_draw_arc(1255,150,15,PI,PI,al_map_rgb(0,0,0),2);
+
+        // Botoes de cores
+        al_draw_bitmap(BLACK,LARGURA_TELA-2*BOTAO_L,ALTURA_TELA-1*BOTAO_A-desloc,0);
+        al_draw_bitmap(BROWN,LARGURA_TELA-2*BOTAO_L,ALTURA_TELA-2*BOTAO_A-desloc,0);
+        al_draw_bitmap(RED,LARGURA_TELA-2*BOTAO_L,ALTURA_TELA-3*BOTAO_A-desloc,0);
+        al_draw_bitmap(ORANGE,LARGURA_TELA-2*BOTAO_L,ALTURA_TELA-4*BOTAO_A-desloc,0);
+        al_draw_bitmap(YELLOW,LARGURA_TELA-2*BOTAO_L,ALTURA_TELA-5*BOTAO_A-desloc,0);
+        al_draw_bitmap(GREEN,LARGURA_TELA-2*BOTAO_L,ALTURA_TELA-6*BOTAO_A-desloc,0);
+        al_draw_bitmap(BLUE,LARGURA_TELA-2*BOTAO_L,ALTURA_TELA-7*BOTAO_A-desloc,0);
+        al_draw_bitmap(VIOLET,LARGURA_TELA-2*BOTAO_L,ALTURA_TELA-8*BOTAO_A-desloc,0);
+        al_draw_bitmap(GRAY,LARGURA_TELA-2*BOTAO_L,ALTURA_TELA-9*BOTAO_A-desloc,0);
+        al_draw_bitmap(WHITE,LARGURA_TELA-2*BOTAO_L,ALTURA_TELA-9*BOTAO_A-desloc,0);
+
+        // Botoes de add e remove
+        al_draw_bitmap(button_remove,LARGURA_TELA-2*BOTAO_L,ALTURA_TELA-13*BOTAO_A-desloc,0);
+        al_draw_bitmap(button_add,LARGURA_TELA-2*BOTAO_L,ALTURA_TELA-14*BOTAO_A-desloc,0);
+
         al_draw_text(font, al_map_rgb(255, 255, 255), 10, 10, 0 , *pause== 0?msg:"Pausado");
         //printf("FPS = %.2f\n",1/((double) (end - begin) / CLOCKS_PER_SEC));
         al_flip_display();
@@ -286,6 +417,7 @@ int cad_system(void)
     int state = WAITING; // State
     // Variavel state configura uma maquina de estados - Definicoes em Functions.h
     bool pause = 0;
+    int add_flag = 1; // Default: 1. Se flag = 1 ADD, se flag = 0 REMOVE
     while(state!=EXIT)
     {
         begin = clock();
@@ -302,67 +434,141 @@ int cad_system(void)
             }
             else if (evento.type == ALLEGRO_EVENT_MOUSE_BUTTON_UP)
             {
-                if (evento.mouse.x >= LARGURA_TELA - BOTAO_L)
+                printf("\nx:%d e y:%d",evento.mouse.x,evento.mouse.y);
+                if (evento.mouse.x >= LARGURA_TELA - 2*BOTAO_L)
                 {
-                    if(evento.mouse.y <= ALTURA_TELA - 0*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - BOTAO_A -desloc)
+                    // Botoes de formas
+                    if (evento.mouse.x >= LARGURA_TELA - BOTAO_L)
                     {
-                        state = WAITING;
-                        printf("\nBotao linha simples");
+
+                        if(evento.mouse.y <= ALTURA_TELA - 0*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            printf("\nBotao linha simples");
+                        }
+                        if(evento.mouse.y <= ALTURA_TELA - 1*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 2*BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            printf("\nBotao triangulo simples");
+                        }
+                        if(evento.mouse.y <= ALTURA_TELA - 2*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 3*BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            printf("\nBotao triangulo colorido");
+                        }
+                        if(evento.mouse.y <= ALTURA_TELA - 3*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 4*BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            printf("\nBotao retangulo simples");
+                        }
+                        if(evento.mouse.y <= ALTURA_TELA - 4*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 5*BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            printf("\nBotao retangulo colorido");
+                        }
+                        if(evento.mouse.y <= ALTURA_TELA - 5*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 6*BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            printf("\nBotao retangulo arredondado");
+                        }
+                        if(evento.mouse.y <= ALTURA_TELA - 6*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 7*BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            printf("\nBotao retangulo arredondado colorido");
+                        }
+                        if(evento.mouse.y <= ALTURA_TELA - 7*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 8*BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            printf("\nBotao elipse simples");
+                        }
+                        if(evento.mouse.y <= ALTURA_TELA - 8*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 9*BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            printf("\nBotao elipse colorida");
+                        }
+                        if(evento.mouse.y <= ALTURA_TELA - 9*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 10*BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            printf("\nBotao circulo simples");
+                        }
+                        if(evento.mouse.y <= ALTURA_TELA - 10*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 11*BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            printf("\nBotao circulo colorido");
+                        }
+                        if(evento.mouse.y <= ALTURA_TELA - 11*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 12*BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            printf("\nBotao arco");
+                        }
                     }
-                    if(evento.mouse.y <= ALTURA_TELA - 1*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 2*BOTAO_A -desloc)
+
+                    // Botoes de ADD ou REMOVE
+                    if (evento.mouse.x >= LARGURA_TELA - 2*BOTAO_L)
                     {
-                        state = WAITING;
-                        printf("\nBotao triangulo simples");
+                        if(evento.mouse.y <= ALTURA_TELA - 12*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 13*BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            add_flag = 0;
+                            printf("\nBotao REMOVE");
+                        }
+                        if(evento.mouse.y <= ALTURA_TELA - 13*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 14*BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            add_flag = 1;
+                            printf("\nBotao ADD");
+                        }
                     }
-                    if(evento.mouse.y <= ALTURA_TELA - 2*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 3*BOTAO_A -desloc)
+
+                    // Botoes de cores
+                    if (evento.mouse.x >= LARGURA_TELA - 2*BOTAO_L && evento.mouse.x <= LARGURA_TELA - 1*BOTAO_L)
                     {
-                        state = WAITING;
-                        printf("\nBotao triangulo colorido");
-                    }
-                    if(evento.mouse.y <= ALTURA_TELA - 3*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 4*BOTAO_A -desloc)
-                    {
-                        state = WAITING;
-                        printf("\nBotao retangulo simples");
-                    }
-                    if(evento.mouse.y <= ALTURA_TELA - 4*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 5*BOTAO_A -desloc)
-                    {
-                        state = WAITING;
-                        printf("\nBotao retangulo colorido");
-                    }
-                    if(evento.mouse.y <= ALTURA_TELA - 5*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 6*BOTAO_A -desloc)
-                    {
-                        state = WAITING;
-                        printf("\nBotao retangulo arredondado");
-                    }
-                    if(evento.mouse.y <= ALTURA_TELA - 6*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 7*BOTAO_A -desloc)
-                    {
-                        state = WAITING;
-                        printf("\nBotao retangulo arredondado colorido");
-                    }
-                    if(evento.mouse.y <= ALTURA_TELA - 7*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 8*BOTAO_A -desloc)
-                    {
-                        state = WAITING;
-                        printf("\nBotao elipse simples");
-                    }
-                    if(evento.mouse.y <= ALTURA_TELA - 8*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 9*BOTAO_A -desloc)
-                    {
-                        state = WAITING;
-                        printf("\nBotao elipse colorida");
-                    }
-                    if(evento.mouse.y <= ALTURA_TELA - 9*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 10*BOTAO_A -desloc)
-                    {
-                        state = WAITING;
-                        printf("\nBotao circulo simples");
-                    }
-                    if(evento.mouse.y <= ALTURA_TELA - 10*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 11*BOTAO_A -desloc)
-                    {
-                        state = WAITING;
-                        printf("\nBotao circulo colorido");
-                    }
-                    if(evento.mouse.y <= ALTURA_TELA - 11*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 12*BOTAO_A -desloc)
-                    {
-                        state = WAITING;
-                        printf("\nBotao arco");
+
+                        if(evento.mouse.y <= ALTURA_TELA - 0*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            printf("\nCor: Preto.");
+                        }
+                        if(evento.mouse.y <= ALTURA_TELA - 1*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 2*BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            printf("\nCor: Marrom");
+                        }
+                        if(evento.mouse.y <= ALTURA_TELA - 2*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 3*BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            printf("\nCor: Vermelho");
+                        }
+                        if(evento.mouse.y <= ALTURA_TELA - 3*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 4*BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            printf("\nCor: Laranja");
+                        }
+                        if(evento.mouse.y <= ALTURA_TELA - 4*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 5*BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            printf("\nCor: Amarelo");
+                        }
+                        if(evento.mouse.y <= ALTURA_TELA - 5*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 6*BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            printf("\nCor: Verde");
+                        }
+                        if(evento.mouse.y <= ALTURA_TELA - 6*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 7*BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            printf("\nCor: Azul");
+                        }
+                        if(evento.mouse.y <= ALTURA_TELA - 7*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 8*BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            printf("\nCor: Violeta");
+                        }
+                        if(evento.mouse.y <= ALTURA_TELA - 8*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 9*BOTAO_A -desloc)
+                        {
+                            state = WAITING;
+                            printf("\nCor: Branca");
+                        }
                     }
                 }
             }
