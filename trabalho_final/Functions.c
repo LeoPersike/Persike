@@ -345,7 +345,7 @@ void exibir_texto_centralizado(char msg[20]) {
                      ALLEGRO_ALIGN_CENTRE, msg);
 }
 
-void atualiza_tela(bool *pause) {
+void atualiza_tela(bool *pause,ListaGen* Lista) {
         char msg[5];
         sprintf(msg, "%.1f", 1/((double) (end - begin) / CLOCKS_PER_SEC));
        // msg = (char[10])((double) (end - begin) / CLOCKS_PER_SEC);
@@ -406,6 +406,50 @@ void atualiza_tela(bool *pause) {
 
         al_draw_text(font, al_map_rgb(255, 255, 255), 10, 10, 0 , *pause== 0?msg:"Pausado");
         //printf("FPS = %.2f\n",1/((double) (end - begin) / CLOCKS_PER_SEC));
+
+        // Desenhando formas
+        ListaGen* pointList = Lista;
+        Linha* pointLinha;
+        Tri* pointTri;
+        Ret* pointRet;
+        Elip* pointElip;
+        Circ* pointCirc;
+        Arco* pointArco;
+
+        while(pointList!=NULL)
+        {
+            switch(pointList->tipo)
+            {
+                case LINE:
+                    pointLinha = pointList->info;
+                    al_draw_line(pointLinha->x1,pointLinha->y1,pointLinha->x2,pointLinha->y2,al_map_rgb(pointLinha->colorR,pointLinha->colorG,pointLinha->colorB),pointLinha->thickness);
+                    break;
+                case TRIANGLE:
+                    pointTri = pointList->info;
+                    al_draw_triangle(pointTri->x1,pointTri->y1,pointTri->x2,pointTri->y2,pointTri->x3,pointTri->y3,al_map_rgb(pointTri->colorR,pointTri->colorG,pointTri->colorB),pointTri->thickness);
+                    break;
+                case RECTANGLE:
+                    pointRet = pointList->info;
+                    al_draw_rectangle(pointRet->x1,pointRet->y1,pointRet->x2,pointRet->y2,al_map_rgb(pointRet->colorR,pointRet->colorG,pointRet->colorB),pointRet->thickness);
+                    break;
+                case ELIPSE:
+                    pointElip = pointList->info;
+                    al_draw_ellipse(pointElip->cx,pointElip->cy,pointElip->rx,pointElip->ry,al_map_rgb(pointElip->colorR,pointElip->colorG,pointElip->colorB),pointElip->thickness);
+                    break;
+                case CIRCLE:
+                    pointCirc = pointList->info;
+                    al_draw_circle(pointCirc->cx,pointCirc->cy,pointCirc->r,al_map_rgb(pointCirc->colorR,pointCirc->colorG,pointCirc->colorB),pointCirc->thickness);
+                    break;
+                case ARC:
+                    pointArco = pointList->info;
+                    al_draw_arc(pointArco->cx,pointArco->cy,pointArco->r,pointArco->start_theta,pointArco->delta_theta,al_map_rgb(pointArco->colorR,pointArco->colorG,pointArco->colorB),pointArco->thickness);
+                    break;
+                default:
+                    printf("\nErro Allegro5: Tipo nao reconhecido.");
+           }
+           pointList = pointList->prox; // Aponta para o proximo
+        }
+
         al_flip_display();
 }
 
@@ -417,7 +461,17 @@ int cad_system(void)
     int state = WAITING; // State
     // Variavel state configura uma maquina de estados - Definicoes em Functions.h
     bool pause = 0;
+    ListaGen* Lista = NULL; // Lista com os desenhos
+    // Insercao manual de teste
+    insere_linha(500,500,630,630,0,255,0,5,&Lista);
+    insere_triangulo(90,90,130,130,50,130,0,0,255,10,&Lista);
+    insere_retangulo(40,55,250,250,5,5,255,0,255,5,&Lista);
+    insere_elipse(500,500,50,30,150,150,150,5,&Lista);
+    insere_circulo(300,300,50,100,50,10,5,&Lista);
+    insere_arco(430,430,15,0,180,100,100,0,5,&Lista);
+
     int add_flag = 1; // Default: 1. Se flag = 1 ADD, se flag = 0 REMOVE
+    int collour_select = 1; // Default: 2 (VERMELHO) - 0-Preto,1-Marrom,2-Vermelho,3-Laranja,4-Amarelo,5-Verde,6-Azul,7-Violeta,8-Branco
     while(state!=EXIT)
     {
         begin = clock();
@@ -526,46 +580,55 @@ int cad_system(void)
 
                         if(evento.mouse.y <= ALTURA_TELA - 0*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - BOTAO_A -desloc)
                         {
+                            collour_select = 0;
                             state = WAITING;
                             printf("\nCor: Preto.");
                         }
                         if(evento.mouse.y <= ALTURA_TELA - 1*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 2*BOTAO_A -desloc)
                         {
+                            collour_select = 1;
                             state = WAITING;
                             printf("\nCor: Marrom");
                         }
                         if(evento.mouse.y <= ALTURA_TELA - 2*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 3*BOTAO_A -desloc)
                         {
+                            collour_select = 2;
                             state = WAITING;
                             printf("\nCor: Vermelho");
                         }
                         if(evento.mouse.y <= ALTURA_TELA - 3*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 4*BOTAO_A -desloc)
                         {
+                            collour_select = 3;
                             state = WAITING;
                             printf("\nCor: Laranja");
                         }
                         if(evento.mouse.y <= ALTURA_TELA - 4*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 5*BOTAO_A -desloc)
                         {
+                            collour_select = 4;
                             state = WAITING;
                             printf("\nCor: Amarelo");
                         }
                         if(evento.mouse.y <= ALTURA_TELA - 5*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 6*BOTAO_A -desloc)
                         {
+                            collour_select = 5;
                             state = WAITING;
                             printf("\nCor: Verde");
                         }
                         if(evento.mouse.y <= ALTURA_TELA - 6*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 7*BOTAO_A -desloc)
                         {
+                            collour_select = 6;
                             state = WAITING;
                             printf("\nCor: Azul");
                         }
                         if(evento.mouse.y <= ALTURA_TELA - 7*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 8*BOTAO_A -desloc)
                         {
+                            collour_select = 7;
                             state = WAITING;
                             printf("\nCor: Violeta");
                         }
                         if(evento.mouse.y <= ALTURA_TELA - 8*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 9*BOTAO_A -desloc)
                         {
+                            collour_select = 8;
                             state = WAITING;
                             printf("\nCor: Branca");
                         }
@@ -577,9 +640,8 @@ int cad_system(void)
     while(((double) (end - begin) / CLOCKS_PER_SEC)<(1./FPS) && !pause) //define FPS maxima
         end = clock();
 
-    atualiza_tela(&pause);
+    atualiza_tela(&pause,Lista);
     }
-
     return state;
 }
 
@@ -727,6 +789,7 @@ void insere_arco(float cx,float cy,float r,float start_theta,float delta_theta,f
     *Lista = novo; // aponta para o novo item da lista
 }
 
+// Imprime a lista no console
 void imprime_lista(ListaGen* Lista)
 {
     // Pontiero para a lista
@@ -780,53 +843,6 @@ void imprime_lista(ListaGen* Lista)
                 printf("\nErro: formato descohecido.");
 
         }
-        pointList = pointList->prox; // Aponta para o proximo
-    }
-}
-
-void imprime_lista_display(ListaGen* Lista)
-{
-    // Pontiero para lista
-    ListaGen* pointList = Lista;
-    // Ponteiros para impressao
-    Linha* pointLinha;
-    Tri* pointTri;
-    Ret* pointRet;
-    Elip* pointElip;
-    Circ* pointCirc;
-    Arco* pointArco;
-
-    // Percorre a lista
-    while(pointList!=NULL)
-    {   switch(pointList->tipo)
-        {
-            case LINE:
-                pointLinha = pointList->info;
-                al_draw_line(pointLinha->x1,pointLinha->y1,pointLinha->x2,pointLinha->y2,al_map_rgb(pointLinha->colorR,pointLinha->colorG,pointLinha->colorB),pointLinha->thickness);
-                break;
-            case TRIANGLE:
-                pointTri = pointList->info;
-                al_draw_triangle(pointTri->x1,pointTri->y1,pointTri->x2,pointTri->y2,pointTri->x3,pointTri->y3,al_map_rgb(pointTri->colorR,pointTri->colorG,pointTri->colorB),pointTri->thickness);
-                break;
-            case RECTANGLE:
-                pointRet = pointList->info;
-                al_draw_rectangle(pointRet->x1,pointRet->y1,pointRet->x2,pointRet->y2,al_map_rgb(pointRet->colorR,pointRet->colorG,pointRet->colorB),pointRet->thickness);
-                break;
-            case ELIPSE:
-                pointElip = pointList->info;
-                al_draw_ellipse(pointElip->cx,pointElip->cy,pointElip->rx,pointElip->ry,al_map_rgb(pointElip->colorR,pointElip->colorG,pointElip->colorB),pointElip->thickness);
-                break;
-            case CIRCLE:
-                pointCirc = pointList->info;
-                al_draw_circle(pointCirc->cx,pointCirc->cy,pointCirc->r,al_map_rgb(pointCirc->colorR,pointCirc->colorG,pointCirc->colorB),pointCirc->thickness);
-                break;
-            case ARC:
-                pointArco = pointList->info;
-                al_draw_arc(pointArco->cx,pointArco->cy,pointArco->r,pointArco->start_theta,pointArco->delta_theta,al_map_rgb(pointArco->colorR,pointArco->colorG,pointArco->colorB),pointArco->thickness);
-                break;
-            default:
-                printf("\nErro Allegro5: Tipo nao reconhecido.");
-       }
         pointList = pointList->prox; // Aponta para o proximo
     }
 }

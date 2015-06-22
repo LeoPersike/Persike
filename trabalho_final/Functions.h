@@ -188,7 +188,7 @@ struct arc {
 int graphic_init(void);
 void fechajanela(void);
 void exibir_texto_centralizado(char msg[20]);
-void atualiza_tela(bool *pause);
+void atualiza_tela(bool *pause,ListaGen* Lista);
 
 //******** Funcao principal do program ***********//
 int cad_system(void);
@@ -201,4 +201,3 @@ void insere_elipse(float cx,float cy,float rx,float ry,float corR,float corG,flo
 void insere_circulo(float cx,float cy,float r,float corR,float corG,float corB,float thick,ListaGen** Lista);
 void insere_arco(float cx,float cy,float r,float start_theta,float delta_theta,float corR,float corG,float corB,float thick,ListaGen** Lista);
 void imprime_lista(ListaGen* Lista);
-void imprime_lista_display(ListaGen* Lista);

@@ -14,6 +14,21 @@
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
+				<Linker>
+					<Add option="`pkg-config allegro-5.0" />
+					<Add option="allegro_primitives-5.0" />
+					<Add option="allegro_audio-5.0" />
+					<Add option="allegro_acodec-5.0" />
+					<Add option="allegro_color-5.0" />
+					<Add option="allegro_dialog-5.0" />
+					<Add option="allegro_font-5.0" />
+					<Add option="allegro_image-5.0" />
+					<Add option="allegro_physfs-5.0" />
+					<Add option="allegro_main-5.0" />
+					<Add option="allegro_memfile-5.0" />
+					<Add option="allegro_ttf-5.0" />
+					<Add option="--libs `" />
+				</Linker>
 			</Target>
 			<Target title="Release">
 				<Option output="bin/Release/trabalho_final" prefix_auto="1" extension_auto="1" />
