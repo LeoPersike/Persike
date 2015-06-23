@@ -212,7 +212,6 @@ int graphic_init()
     al_set_target_bitmap(background);
     al_clear_to_color(al_map_rgb(255, 255, 255));
 
-
     // Dando forma aos botoes de adicionar e remover
     al_set_target_bitmap(button_add);
     al_clear_to_color(al_map_rgb(255, 255, 255));
@@ -351,6 +350,62 @@ void atualiza_tela(bool *pause,ListaGen* Lista) {
        // msg = (char[10])((double) (end - begin) / CLOCKS_PER_SEC);
         al_set_target_bitmap(al_get_backbuffer(janela));
         al_draw_bitmap(background, 0, 0, 0);
+
+        // Desenhando formas
+        ListaGen* pointList = Lista;
+        Linha* pointLinha;
+        Tri* pointTri;
+        Ret* pointRet;
+        Elip* pointElip;
+        Circ* pointCirc;
+        Arco* pointArco;
+
+        while(pointList!=NULL)
+        {
+            switch(pointList->tipo)
+            {
+                case LINE:
+                    pointLinha = pointList->info;
+                    al_draw_line(pointLinha->x1,pointLinha->y1,pointLinha->x2,pointLinha->y2,al_map_rgb(pointLinha->colorR,pointLinha->colorG,pointLinha->colorB),pointLinha->thickness);
+                    break;
+                case TRIANGLE:
+                    pointTri = pointList->info;
+                    if(pointTri->filled)
+                        al_draw_filled_triangle(pointTri->x1,pointTri->y1,pointTri->x2,pointTri->y2,pointTri->x3,pointTri->y3,al_map_rgb(pointTri->colorR,pointTri->colorG,pointTri->colorB));
+                    else
+                        al_draw_triangle(pointTri->x1,pointTri->y1,pointTri->x2,pointTri->y2,pointTri->x3,pointTri->y3,al_map_rgb(pointTri->colorR,pointTri->colorG,pointTri->colorB),pointTri->thickness);
+                    break;
+                case RECTANGLE:
+                    pointRet = pointList->info;
+                    if(pointRet->filled)
+                        al_draw_filled_rounded_rectangle(pointRet->x1,pointRet->y1,pointRet->x2,pointRet->y2,pointRet->rx,pointRet->ry,al_map_rgb(pointRet->colorR,pointRet->colorG,pointRet->colorB));
+                    else
+                        al_draw_rounded_rectangle(pointRet->x1,pointRet->y1,pointRet->x2,pointRet->y2,pointRet->rx,pointRet->ry,al_map_rgb(pointRet->colorR,pointRet->colorG,pointRet->colorB),pointRet->thickness);
+                    break;
+                case ELIPSE:
+                    pointElip = pointList->info;
+                    if(pointElip->filled)
+                        al_draw_filled_ellipse(pointElip->cx,pointElip->cy,pointElip->rx,pointElip->ry,al_map_rgb(pointElip->colorR,pointElip->colorG,pointElip->colorB));
+                    else
+                        al_draw_ellipse(pointElip->cx,pointElip->cy,pointElip->rx,pointElip->ry,al_map_rgb(pointElip->colorR,pointElip->colorG,pointElip->colorB),pointElip->thickness);
+                    break;
+                case CIRCLE:
+                    pointCirc = pointList->info;
+                    if(pointCirc->filled)
+                        al_draw_filled_circle(pointCirc->cx,pointCirc->cy,pointCirc->r,al_map_rgb(pointCirc->colorR,pointCirc->colorG,pointCirc->colorB));
+                    else
+                        al_draw_circle(pointCirc->cx,pointCirc->cy,pointCirc->r,al_map_rgb(pointCirc->colorR,pointCirc->colorG,pointCirc->colorB),pointCirc->thickness);
+                    break;
+                case ARC:
+                    pointArco = pointList->info;
+                    al_draw_arc(pointArco->cx,pointArco->cy,pointArco->r,pointArco->start_theta,pointArco->delta_theta,al_map_rgb(pointArco->colorR,pointArco->colorG,pointArco->colorB),pointArco->thickness);
+                    break;
+                default:
+                    printf("\nErro Allegro5: Tipo nao reconhecido.");
+           }
+           pointList = pointList->prox; // Aponta para o proximo
+        }
+
         // Botao linha simples
         al_draw_bitmap(button_line,LARGURA_TELA-BOTAO_L,ALTURA_TELA-1*BOTAO_A-desloc,0);
         al_draw_line(1240,696,1270,696,al_map_rgb(0,0,0),2);
@@ -398,80 +453,115 @@ void atualiza_tela(bool *pause,ListaGen* Lista) {
         al_draw_bitmap(BLUE,LARGURA_TELA-2*BOTAO_L,ALTURA_TELA-7*BOTAO_A-desloc,0);
         al_draw_bitmap(VIOLET,LARGURA_TELA-2*BOTAO_L,ALTURA_TELA-8*BOTAO_A-desloc,0);
         al_draw_bitmap(GRAY,LARGURA_TELA-2*BOTAO_L,ALTURA_TELA-9*BOTAO_A-desloc,0);
-        al_draw_bitmap(WHITE,LARGURA_TELA-2*BOTAO_L,ALTURA_TELA-9*BOTAO_A-desloc,0);
+        al_draw_bitmap(WHITE,LARGURA_TELA-2*BOTAO_L,ALTURA_TELA-10*BOTAO_A-desloc,0);
 
         // Botoes de add e remove
         al_draw_bitmap(button_remove,LARGURA_TELA-2*BOTAO_L,ALTURA_TELA-13*BOTAO_A-desloc,0);
         al_draw_bitmap(button_add,LARGURA_TELA-2*BOTAO_L,ALTURA_TELA-14*BOTAO_A-desloc,0);
 
-        al_draw_text(font, al_map_rgb(255, 255, 255), 10, 10, 0 , *pause== 0?msg:"Pausado");
+        //al_draw_text(font, al_map_rgb(255, 255, 255), 10, 10, 0 , *pause== 0?msg:"Pausado");
         //printf("FPS = %.2f\n",1/((double) (end - begin) / CLOCKS_PER_SEC));
-
-        // Desenhando formas
-        ListaGen* pointList = Lista;
-        Linha* pointLinha;
-        Tri* pointTri;
-        Ret* pointRet;
-        Elip* pointElip;
-        Circ* pointCirc;
-        Arco* pointArco;
-
-        while(pointList!=NULL)
-        {
-            switch(pointList->tipo)
-            {
-                case LINE:
-                    pointLinha = pointList->info;
-                    al_draw_line(pointLinha->x1,pointLinha->y1,pointLinha->x2,pointLinha->y2,al_map_rgb(pointLinha->colorR,pointLinha->colorG,pointLinha->colorB),pointLinha->thickness);
-                    break;
-                case TRIANGLE:
-                    pointTri = pointList->info;
-                    al_draw_triangle(pointTri->x1,pointTri->y1,pointTri->x2,pointTri->y2,pointTri->x3,pointTri->y3,al_map_rgb(pointTri->colorR,pointTri->colorG,pointTri->colorB),pointTri->thickness);
-                    break;
-                case RECTANGLE:
-                    pointRet = pointList->info;
-                    al_draw_rectangle(pointRet->x1,pointRet->y1,pointRet->x2,pointRet->y2,al_map_rgb(pointRet->colorR,pointRet->colorG,pointRet->colorB),pointRet->thickness);
-                    break;
-                case ELIPSE:
-                    pointElip = pointList->info;
-                    al_draw_ellipse(pointElip->cx,pointElip->cy,pointElip->rx,pointElip->ry,al_map_rgb(pointElip->colorR,pointElip->colorG,pointElip->colorB),pointElip->thickness);
-                    break;
-                case CIRCLE:
-                    pointCirc = pointList->info;
-                    al_draw_circle(pointCirc->cx,pointCirc->cy,pointCirc->r,al_map_rgb(pointCirc->colorR,pointCirc->colorG,pointCirc->colorB),pointCirc->thickness);
-                    break;
-                case ARC:
-                    pointArco = pointList->info;
-                    al_draw_arc(pointArco->cx,pointArco->cy,pointArco->r,pointArco->start_theta,pointArco->delta_theta,al_map_rgb(pointArco->colorR,pointArco->colorG,pointArco->colorB),pointArco->thickness);
-                    break;
-                default:
-                    printf("\nErro Allegro5: Tipo nao reconhecido.");
-           }
-           pointList = pointList->prox; // Aponta para o proximo
-        }
 
         al_flip_display();
 }
 
+void le_valor_teclado(float* valor)
+{
+    float resultado = 0;
+    int state = WAITING;
+    printf("\n");
+    while(state!=EXIT)
+    {
+        while (!al_is_event_queue_empty(fila_eventos))
+        {
+            al_wait_for_event(fila_eventos, &evento);
+            if (evento.type == ALLEGRO_EVENT_KEY_DOWN)
+            {
+                if (evento.keyboard.keycode == ALLEGRO_KEY_ENTER)
+                {
+                    state = EXIT;
+                }
+                else if (evento.keyboard.keycode == ALLEGRO_KEY_0)
+                {
+                    state = WAITING;
+                    resultado = resultado*10;
+                    resultado = resultado +0;
+                }
+                else if (evento.keyboard.keycode == ALLEGRO_KEY_1)
+                {
+                    state = WAITING;
+                    resultado = resultado*10;
+                    resultado = resultado+1;
+                }
+                else if (evento.keyboard.keycode == ALLEGRO_KEY_2)
+                {
+                    state = WAITING;
+                    resultado = resultado*10;
+                    resultado = resultado+2;
+                }
+                else if (evento.keyboard.keycode == ALLEGRO_KEY_3)
+                {
+                    state = WAITING;
+                    resultado = resultado*10;
+                    resultado = resultado+3;
+                }
+                else if (evento.keyboard.keycode == ALLEGRO_KEY_4)
+                {
+                    state = WAITING;
+                    resultado = resultado*10;
+                    resultado = resultado+4;
+                }
+                else if (evento.keyboard.keycode == ALLEGRO_KEY_5)
+                {
+                    state = WAITING;
+                    resultado = resultado*10;
+                    resultado = resultado+5;
+                }
+                else if (evento.keyboard.keycode == ALLEGRO_KEY_6)
+                {
+                    state = WAITING;
+                    resultado = resultado*10;
+                    resultado = resultado+6;
+                }
+                else if (evento.keyboard.keycode == ALLEGRO_KEY_7)
+                {
+                    state = WAITING;
+                    resultado = resultado*10;
+                    resultado = resultado+7;
+                }
+                else if (evento.keyboard.keycode == ALLEGRO_KEY_8)
+                {
+                    state = WAITING;
+                    resultado = resultado*10;
+                    resultado = resultado+8;
+                }
+                else if (evento.keyboard.keycode == ALLEGRO_KEY_9)
+                {
+                    state = WAITING;
+                    resultado = resultado*10;
+                    resultado = resultado+9;
+                }
+            }
+        }
+    }
+    *valor = resultado;
+}
 //********* Funcoes do programa *************//
 
 //********* Funcao principal ****************//
 int cad_system(void)
 {
-    int state = WAITING; // State
     // Variavel state configura uma maquina de estados - Definicoes em Functions.h
-    bool pause = 0;
-    ListaGen* Lista = NULL; // Lista com os desenhos
-    // Insercao manual de teste
-    insere_linha(500,500,630,630,0,255,0,5,&Lista);
-    insere_triangulo(90,90,130,130,50,130,0,0,255,10,&Lista);
-    insere_retangulo(40,55,250,250,5,5,255,0,255,5,&Lista);
-    insere_elipse(500,500,50,30,150,150,150,5,&Lista);
-    insere_circulo(300,300,50,100,50,10,5,&Lista);
-    insere_arco(430,430,15,0,180,100,100,0,5,&Lista);
+    int state = WAITING; // State
 
+    // Lista generica com os desenhos
+    ListaGen* Lista = NULL; // Lista com os desenhos
+
+    // Variaveis utilizadas
+    bool pause = 0;
+    int corR=0,corG=0,corB=0; // Black = Default
     int add_flag = 1; // Default: 1. Se flag = 1 ADD, se flag = 0 REMOVE
-    int collour_select = 1; // Default: 2 (VERMELHO) - 0-Preto,1-Marrom,2-Vermelho,3-Laranja,4-Amarelo,5-Verde,6-Azul,7-Violeta,8-Branco
+
     while(state!=EXIT)
     {
         begin = clock();
@@ -494,65 +584,76 @@ int cad_system(void)
                     // Botoes de formas
                     if (evento.mouse.x >= LARGURA_TELA - BOTAO_L)
                     {
-
                         if(evento.mouse.y <= ALTURA_TELA - 0*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - BOTAO_A -desloc)
                         {
-                            state = WAITING;
+                            if(add_flag)
+                                insere_linha_allegro(corR,corG,corB,&Lista);
                             printf("\nBotao linha simples");
                         }
-                        if(evento.mouse.y <= ALTURA_TELA - 1*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 2*BOTAO_A -desloc)
+                        else if(evento.mouse.y <= ALTURA_TELA - 1*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 2*BOTAO_A -desloc)
                         {
-                            state = WAITING;
+                            if(add_flag)
+                                insere_triangulo_allegro(corR,corG,corB,NOT_FILLED,&Lista);
                             printf("\nBotao triangulo simples");
                         }
-                        if(evento.mouse.y <= ALTURA_TELA - 2*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 3*BOTAO_A -desloc)
+                        else if(evento.mouse.y <= ALTURA_TELA - 2*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 3*BOTAO_A -desloc)
                         {
-                            state = WAITING;
+                            if(add_flag)
+                                insere_triangulo_allegro(corR,corG,corB,FILLED,&Lista);
                             printf("\nBotao triangulo colorido");
                         }
-                        if(evento.mouse.y <= ALTURA_TELA - 3*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 4*BOTAO_A -desloc)
+                        else if(evento.mouse.y <= ALTURA_TELA - 3*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 4*BOTAO_A -desloc)
                         {
-                            state = WAITING;
+                            if(add_flag)
+                                insere_retangulo_allegro(corR,corG,corB,NOT_ROUNDED,NOT_FILLED,&Lista);
                             printf("\nBotao retangulo simples");
                         }
-                        if(evento.mouse.y <= ALTURA_TELA - 4*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 5*BOTAO_A -desloc)
+                        else if(evento.mouse.y <= ALTURA_TELA - 4*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 5*BOTAO_A -desloc)
                         {
-                            state = WAITING;
+                            if(add_flag)
+                                insere_retangulo_allegro(corR,corG,corB,NOT_ROUNDED,FILLED,&Lista);
                             printf("\nBotao retangulo colorido");
                         }
-                        if(evento.mouse.y <= ALTURA_TELA - 5*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 6*BOTAO_A -desloc)
+                        else if(evento.mouse.y <= ALTURA_TELA - 5*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 6*BOTAO_A -desloc)
                         {
-                            state = WAITING;
+                            if(add_flag)
+                                insere_retangulo_allegro(corR,corG,corB,ROUNDED,NOT_FILLED,&Lista);
                             printf("\nBotao retangulo arredondado");
                         }
-                        if(evento.mouse.y <= ALTURA_TELA - 6*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 7*BOTAO_A -desloc)
+                        else if(evento.mouse.y <= ALTURA_TELA - 6*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 7*BOTAO_A -desloc)
                         {
-                            state = WAITING;
+                            if(add_flag)
+                                insere_retangulo_allegro(corR,corG,corB,ROUNDED,FILLED,&Lista);
                             printf("\nBotao retangulo arredondado colorido");
                         }
-                        if(evento.mouse.y <= ALTURA_TELA - 7*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 8*BOTAO_A -desloc)
+                        else if(evento.mouse.y <= ALTURA_TELA - 7*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 8*BOTAO_A -desloc)
                         {
-                            state = WAITING;
+                            if(add_flag)
+                                insere_elipse_allegro(corR,corG,corB,NOT_FILLED,&Lista);
                             printf("\nBotao elipse simples");
                         }
-                        if(evento.mouse.y <= ALTURA_TELA - 8*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 9*BOTAO_A -desloc)
+                        else if(evento.mouse.y <= ALTURA_TELA - 8*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 9*BOTAO_A -desloc)
                         {
-                            state = WAITING;
+                            if(add_flag)
+                                insere_elipse_allegro(corR,corG,corB,FILLED,&Lista);
                             printf("\nBotao elipse colorida");
                         }
-                        if(evento.mouse.y <= ALTURA_TELA - 9*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 10*BOTAO_A -desloc)
+                        else if(evento.mouse.y <= ALTURA_TELA - 9*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 10*BOTAO_A -desloc)
                         {
-                            state = WAITING;
+                            if(add_flag)
+                                insere_circulo_allegro(corR,corG,corB,NOT_FILLED,&Lista);
                             printf("\nBotao circulo simples");
                         }
-                        if(evento.mouse.y <= ALTURA_TELA - 10*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 11*BOTAO_A -desloc)
+                        else if(evento.mouse.y <= ALTURA_TELA - 10*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 11*BOTAO_A -desloc)
                         {
-                            state = WAITING;
+                            if(add_flag)
+                                insere_circulo_allegro(corR,corG,corB,FILLED,&Lista);
                             printf("\nBotao circulo colorido");
                         }
-                        if(evento.mouse.y <= ALTURA_TELA - 11*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 12*BOTAO_A -desloc)
+                        else if(evento.mouse.y <= ALTURA_TELA - 11*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 12*BOTAO_A -desloc)
                         {
-                            state = WAITING;
+                            if(add_flag)
+                                insere_arco(corR,corG,corB,&Lista);
                             printf("\nBotao arco");
                         }
                     }
@@ -562,13 +663,11 @@ int cad_system(void)
                     {
                         if(evento.mouse.y <= ALTURA_TELA - 12*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 13*BOTAO_A -desloc)
                         {
-                            state = WAITING;
                             add_flag = 0;
                             printf("\nBotao REMOVE");
                         }
-                        if(evento.mouse.y <= ALTURA_TELA - 13*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 14*BOTAO_A -desloc)
+                        else if(evento.mouse.y <= ALTURA_TELA - 13*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 14*BOTAO_A -desloc)
                         {
-                            state = WAITING;
                             add_flag = 1;
                             printf("\nBotao ADD");
                         }
@@ -580,56 +679,52 @@ int cad_system(void)
 
                         if(evento.mouse.y <= ALTURA_TELA - 0*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - BOTAO_A -desloc)
                         {
-                            collour_select = 0;
-                            state = WAITING;
+                            corR = 0; corG = 0; corB = 0;
                             printf("\nCor: Preto.");
                         }
-                        if(evento.mouse.y <= ALTURA_TELA - 1*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 2*BOTAO_A -desloc)
+                        else if(evento.mouse.y <= ALTURA_TELA - 1*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 2*BOTAO_A -desloc)
                         {
-                            collour_select = 1;
-                            state = WAITING;
+                            corR = 94; corG = 28; corB = 13;
                             printf("\nCor: Marrom");
                         }
-                        if(evento.mouse.y <= ALTURA_TELA - 2*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 3*BOTAO_A -desloc)
+                        else if(evento.mouse.y <= ALTURA_TELA - 2*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 3*BOTAO_A -desloc)
                         {
-                            collour_select = 2;
-                            state = WAITING;
+                            corR = 255; corG = 0; corB = 0;
                             printf("\nCor: Vermelho");
                         }
-                        if(evento.mouse.y <= ALTURA_TELA - 3*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 4*BOTAO_A -desloc)
+                        else if(evento.mouse.y <= ALTURA_TELA - 3*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 4*BOTAO_A -desloc)
                         {
-                            collour_select = 3;
-                            state = WAITING;
+                            corR = 255; corG = 116; corB = 21;
                             printf("\nCor: Laranja");
                         }
-                        if(evento.mouse.y <= ALTURA_TELA - 4*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 5*BOTAO_A -desloc)
+                        else if(evento.mouse.y <= ALTURA_TELA - 4*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 5*BOTAO_A -desloc)
                         {
-                            collour_select = 4;
-                            state = WAITING;
+                            corR = 255; corG = 217; corB = 0;
                             printf("\nCor: Amarelo");
                         }
-                        if(evento.mouse.y <= ALTURA_TELA - 5*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 6*BOTAO_A -desloc)
+                        else if(evento.mouse.y <= ALTURA_TELA - 5*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 6*BOTAO_A -desloc)
                         {
-                            collour_select = 5;
-                            state = WAITING;
+                            corR = 0; corG = 255; corB = 0;
                             printf("\nCor: Verde");
                         }
-                        if(evento.mouse.y <= ALTURA_TELA - 6*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 7*BOTAO_A -desloc)
+                        else if(evento.mouse.y <= ALTURA_TELA - 6*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 7*BOTAO_A -desloc)
                         {
-                            collour_select = 6;
-                            state = WAITING;
+                            corR = 0; corG = 0; corB = 255;
                             printf("\nCor: Azul");
                         }
-                        if(evento.mouse.y <= ALTURA_TELA - 7*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 8*BOTAO_A -desloc)
+                        else if(evento.mouse.y <= ALTURA_TELA - 7*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 8*BOTAO_A -desloc)
                         {
-                            collour_select = 7;
-                            state = WAITING;
+                            corR = 69; corG = 0; corB = 68;
                             printf("\nCor: Violeta");
                         }
-                        if(evento.mouse.y <= ALTURA_TELA - 8*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 9*BOTAO_A -desloc)
+                        else if(evento.mouse.y <= ALTURA_TELA - 8*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 9*BOTAO_A -desloc)
                         {
-                            collour_select = 8;
-                            state = WAITING;
+                            corR = 117; corG = 117; corB = 117;
+                            printf("\nCor: Cinza");
+                        }
+                        else if(evento.mouse.y <= ALTURA_TELA - 9*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 10*BOTAO_A -desloc)
+                        {
+                            corR = 255; corG = 255; corB = 255;
                             printf("\nCor: Branca");
                         }
                     }
@@ -646,7 +741,7 @@ int cad_system(void)
 }
 
 //*********** Funcoes de insercao e remocao de elementso ************//
-void insere_linha(float x1,float y1,float x2,float y2,float corR,float corG,float corB,float thick,ListaGen** Lista)
+void insere_linha_allegro(const float corR,const float corG,const float corB,ListaGen** Lista)
 {
     ListaGen* novo = (ListaGen*) malloc(sizeof(ListaGen));
     if (novo == NULL) exit(EXIT_FAILURE); // nao ha mais espaco na memoria
@@ -654,22 +749,34 @@ void insere_linha(float x1,float y1,float x2,float y2,float corR,float corG,floa
     Linha* linhanovo = (Linha*) malloc(sizeof(Linha));
     if (linhanovo == NULL) exit(EXIT_FAILURE); // nao ha mais espaco na memoria
 
-    linhanovo->x1 = x1;
-    linhanovo->y1 = y1;
-    linhanovo->x2 = x2;
-    linhanovo->y2 = y2;
+    float value;
     linhanovo->colorR = corR;
     linhanovo->colorG = corG;
     linhanovo->colorB = corB;
-    linhanovo->thickness = thick;
 
-    novo->tipo = LINE; // 1 = Retangulo
+    al_show_native_message_box(NULL,"Linha","","Digite a coordenada x1 e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    linhanovo->x1 = value;
+    al_show_native_message_box(NULL,"Linha","","Digite a coordenada y1 e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    linhanovo->y1 = value;
+    al_show_native_message_box(NULL,"Linha","","Digite a coordenada x2 e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    linhanovo->x2 = value;
+    al_show_native_message_box(NULL,"Linha","","Digite a coordenada y2 e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    linhanovo->y2 = value;
+    al_show_native_message_box(NULL,"Linha","","Digite a espessura da linha e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    linhanovo->thickness = value;
+
+    novo->tipo = LINE;
     novo->info = linhanovo;
     novo->prox = *Lista;
     *Lista = novo; // aponta para o novo item da lista
 }
 
-void insere_triangulo(float x1,float y1,float x2,float y2,float x3,float y3,float corR,float corG,float corB,float thick,ListaGen** Lista)
+void insere_triangulo_allegro(const float corR,const float corG,const float corB,const int filled,ListaGen** Lista)
 {
     ListaGen* novo = (ListaGen*) malloc(sizeof(ListaGen));
     if (novo == NULL) exit(EXIT_FAILURE); // nao ha mais espaco na memoria
@@ -677,24 +784,46 @@ void insere_triangulo(float x1,float y1,float x2,float y2,float x3,float y3,floa
     Tri* trinovo = (Tri*) malloc(sizeof(Tri));
     if (trinovo == NULL) exit(EXIT_FAILURE); // nao ha mais espaco na memoria
 
-    trinovo->x1 = x1;
-    trinovo->y1 = y1;
-    trinovo->x2 = x2;
-    trinovo->y2 = y2;
-    trinovo->x3 = x3;
-    trinovo->y3 = y3;
+    float value;
     trinovo->colorR = corR;
     trinovo->colorG = corG;
     trinovo->colorB = corB;
-    trinovo->thickness = thick;
+    trinovo->filled = filled;
 
-    novo->tipo = TRIANGLE; // 1 = Retangulo
+    al_show_native_message_box(NULL,"Triangulo","","Digite a coordenada x1 e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    trinovo->x1 = value;
+    al_show_native_message_box(NULL,"Triangulo","","Digite a coordenada y1 e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    trinovo->y1 = value;
+    al_show_native_message_box(NULL,"Triangulo","","Digite a coordenada x2 e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    trinovo->x2 = value;
+    al_show_native_message_box(NULL,"Triangulo","","Digite a coordenada y2 e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    trinovo->y2 = value;
+    al_show_native_message_box(NULL,"Triangulo","","Digite a coordenada x3 e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    trinovo->x3 = value;
+    al_show_native_message_box(NULL,"Triangulo","","Digite a coordenada y3 e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    trinovo->y1 = value;
+    if(!filled)
+    {
+        al_show_native_message_box(NULL,"Triangulo","","Digite a espessura da linha e tecle <ENTER>.",NULL,NULL);
+        le_valor_teclado(&value);
+        trinovo->thickness = value;
+    }
+    else
+        trinovo->thickness = 0;
+
+    novo->tipo = TRIANGLE;
     novo->info = trinovo;
     novo->prox = *Lista;
     *Lista = novo; // aponta para o novo item da lista
 }
 
-void insere_retangulo(float x1,float y1,float x2,float y2,float rx,float ry,float corR,float corG,float corB,float thick,ListaGen** Lista) // Insere um retangulo na lista
+void insere_retangulo_allegro(const float corR,const float corG,const float corB,const int rounded,const int filled,ListaGen** Lista)
 {
     ListaGen* novo = (ListaGen*) malloc(sizeof(ListaGen));
     if (novo == NULL) exit(EXIT_FAILURE); // nao ha mais espaco na memoria
@@ -702,24 +831,55 @@ void insere_retangulo(float x1,float y1,float x2,float y2,float rx,float ry,floa
     Ret* retnovo = (Ret*) malloc(sizeof(Ret));
     if (retnovo == NULL) exit(EXIT_FAILURE); // nao ha mais espaco na memoria
 
-    retnovo->x1 = x1;
-    retnovo->y1 = y1;
-    retnovo->x2 = x2;
-    retnovo->y2 = y2;
-    retnovo->rx = rx;
-    retnovo->ry = ry;
+    float value;
     retnovo->colorR = corR;
     retnovo->colorG = corG;
     retnovo->colorB = corB;
-    retnovo->thickness = thick;
+    retnovo->filled = filled;
 
-    novo->tipo = RECTANGLE; // 1 = Retangulo
+    al_show_native_message_box(NULL,"Retangulo","","Digite a coordenada x1 e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    retnovo->x1 = value;
+    al_show_native_message_box(NULL,"Retangulo","","Digite a coordenada y1 e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    retnovo->y1 = value;
+    al_show_native_message_box(NULL,"Retangulo","","Digite a coordenada x2 e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    retnovo->x2 = value;
+    al_show_native_message_box(NULL,"Retangulo","","Digite a coordenada y2 e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    retnovo->y2 = value;
+
+    if(rounded)
+    {
+        al_show_native_message_box(NULL,"Retangulo","","Digite o raio do arredondamento em X e tecle <ENTER>.",NULL,NULL);
+        le_valor_teclado(&value);
+        retnovo->rx = value;
+        al_show_native_message_box(NULL,"Retangulo","","Digite o raio do arredondamento em Y e tecle <ENTER>.",NULL,NULL);
+        le_valor_teclado(&value);
+        retnovo->ry = value;
+    }
+    else
+    {
+        retnovo->rx = 0;
+        retnovo->ry = 0;
+    }
+    if(!filled)
+    {
+        al_show_native_message_box(NULL,"Retangulo","","Digite a espessura da linha e tecle <ENTER>.",NULL,NULL);
+        le_valor_teclado(&value);
+        retnovo->thickness = value;
+    }
+    else
+        retnovo->thickness = 0;
+
+    novo->tipo = RECTANGLE;
     novo->info = retnovo;
     novo->prox = *Lista;
     *Lista = novo; // aponta para o novo item da lista
 }
 
-void insere_elipse(float cx,float cy,float rx,float ry,float corR,float corG,float corB,float thick,ListaGen** Lista)
+void insere_elipse_allegro(const float corR,const float corG,const float corB,const int filled,ListaGen** Lista)
 {
     ListaGen* novo = (ListaGen*) malloc(sizeof(ListaGen));
     if (novo == NULL) exit(EXIT_FAILURE); // nao ha mais espaco na memoria
@@ -727,14 +887,32 @@ void insere_elipse(float cx,float cy,float rx,float ry,float corR,float corG,flo
     Elip* elipnovo = (Elip*) malloc(sizeof(Elip));
     if (elipnovo == NULL) exit(EXIT_FAILURE); // nao ha mais espaco na memoria
 
-    elipnovo->cx = cx;
-    elipnovo->cy = cy;
-    elipnovo->rx = rx;
-    elipnovo->ry = ry;
+    float value;
     elipnovo->colorR = corR;
     elipnovo->colorG = corG;
     elipnovo->colorB = corB;
-    elipnovo->thickness = thick;
+    elipnovo->filled = filled;
+
+    al_show_native_message_box(NULL,"Elipse","","Digite a coordenada do centro X e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    elipnovo->cx = value;
+    al_show_native_message_box(NULL,"Elipse","","Digite a coordenada do centro Y e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    elipnovo->cy = value;
+    al_show_native_message_box(NULL,"Elipse","","Digite o raio em X e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    elipnovo->rx = value;
+    al_show_native_message_box(NULL,"Elipse","","Digite o raio em Y e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    elipnovo->ry = value;
+    if(!filled)
+    {
+        al_show_native_message_box(NULL,"Elipse","","Digite a espessura da linha e tecle <ENTER>.",NULL,NULL);
+        le_valor_teclado(&value);
+        elipnovo->thickness = value;
+    }
+    else
+        elipnovo->thickness = 0;
 
     novo->tipo = ELIPSE;
     novo->info = elipnovo;
@@ -742,7 +920,7 @@ void insere_elipse(float cx,float cy,float rx,float ry,float corR,float corG,flo
     *Lista = novo; // aponta para o novo item da lista
 }
 
-void insere_circulo(float cx,float cy,float r,float corR,float corG,float corB,float thick,ListaGen** Lista)
+void insere_circulo_allegro(const float corR,const float corG,const float corB,const int filled,ListaGen** Lista)
 {
     ListaGen* novo = (ListaGen*) malloc(sizeof(ListaGen));
     if (novo == NULL) exit(EXIT_FAILURE); // nao ha mais espaco na memoria
@@ -750,13 +928,29 @@ void insere_circulo(float cx,float cy,float r,float corR,float corG,float corB,f
     Circ* circnovo = (Circ*) malloc(sizeof(Circ));
     if (circnovo == NULL) exit(EXIT_FAILURE); // nao ha mais espaco na memoria
 
-    circnovo->cx = cx;
-    circnovo->cy = cy;
-    circnovo->r = r;
+    float value;
     circnovo->colorR = corR;
     circnovo->colorG = corG;
     circnovo->colorB = corB;
-    circnovo->thickness = thick;
+    circnovo->filled = filled;
+
+    al_show_native_message_box(NULL,"Circulo","","Digite a coordenada do centro X e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    circnovo->cx = value;
+    al_show_native_message_box(NULL,"Circulo","","Digite a coordenada do centro Y e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    circnovo->cy = value;
+    al_show_native_message_box(NULL,"Circulo","","Digite o raio e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    circnovo->r = value;
+    if(!filled)
+    {
+        al_show_native_message_box(NULL,"Circulo","","Digite a espessura da linha e tecle <ENTER>.",NULL,NULL);
+        le_valor_teclado(&value);
+        circnovo->thickness = value;
+    }
+    else
+        circnovo->thickness = 0;
 
     novo->tipo = CIRCLE;
     novo->info = circnovo;
@@ -764,7 +958,7 @@ void insere_circulo(float cx,float cy,float r,float corR,float corG,float corB,f
     *Lista = novo; // aponta para o novo item da lista
 }
 
-void insere_arco(float cx,float cy,float r,float start_theta,float delta_theta,float corR,float corG,float corB,float thick,ListaGen** Lista)
+void insere_arco(const float corR,const float corG,const float corB,ListaGen** Lista)
 {
     ListaGen* novo = (ListaGen*) malloc(sizeof(ListaGen));
     if (novo == NULL) exit(EXIT_FAILURE); // nao ha mais espaco na memoria
@@ -772,16 +966,29 @@ void insere_arco(float cx,float cy,float r,float start_theta,float delta_theta,f
     Arco* arconovo = (Arco*) malloc(sizeof(Arco));
     if (arconovo == NULL) exit(EXIT_FAILURE); // nao ha mais espaco na memoria
 
-    arconovo->cx = cx;
-    arconovo->cy = cy;
-    arconovo->r = r;
-    // A multiplicacao e feita para que o usuario entre com o angulo em graus e a funcao al_draw utiliza radianos
-    arconovo->start_theta = start_theta*0.0174532925;
-    arconovo->delta_theta = delta_theta*0.0174532925;
+    float value;
     arconovo->colorR = corR;
     arconovo->colorG = corG;
     arconovo->colorB = corB;
-    arconovo->thickness = thick;
+
+    al_show_native_message_box(NULL,"Arco","","Digite a coordenada do centro X e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    arconovo->cx = value;
+    al_show_native_message_box(NULL,"Arco","","Digite a coordenada do centro Y e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    arconovo->cy = value;
+    al_show_native_message_box(NULL,"Arco","","Digite o raio e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    arconovo->r = value;
+    al_show_native_message_box(NULL,"Arco","","Digite o angulo inicial e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    arconovo->start_theta = value*0.0174532925;
+    al_show_native_message_box(NULL,"Arco","","Digite o intervalo do angulo (delta) e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    arconovo->delta_theta = value*0.0174532925;
+    al_show_native_message_box(NULL,"Arco","","Digite a espessura da linha e tecle <ENTER>.",NULL,NULL);
+    le_valor_teclado(&value);
+    arconovo->thickness = value;
 
     novo->tipo = ARC;
     novo->info = arconovo;
@@ -841,7 +1048,6 @@ void imprime_lista(ListaGen* Lista)
             case RIBBON: break;
             default:
                 printf("\nErro: formato descohecido.");
-
         }
         pointList = pointList->prox; // Aponta para o proximo
     }

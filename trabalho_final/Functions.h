@@ -43,24 +43,11 @@ double time_spent1,time_spent2,time_spent3;
 // Control states
 #define EXIT 0
 #define WAITING 1
-// Draw states
-#define DRAW_LINE 2
-#define DRAW_TRIANGLE 3
-#define DRAW_RECTANGLE 4
-#define DRAW_ELIPSE 5
-#define DRAW_CIRCLE 6
-#define DRAW_ARC 7
-#define DRAW_SPLINE 8
-#define DRAW_RIBBON 9
-// Remove states
-#define REMOVE_LINE 10
-#define REMOVE_TRIANGLE 11
-#define REMOVE_RECTANGLE 12
-#define REMOVE_ELIPSE 13
-#define REMOVE_CIRCLE 14
-#define REMOVE_ARC 15
-#define REMOVE_SPLINE 16
-#define REMOVE_RIBBON 17
+// Filled
+#define NOT_FILLED 0
+#define FILLED 1
+#define NOT_ROUNDED 0
+#define ROUNDED 1
 
 //********* Funcoes allegro draw **************/
 // As funcoes podem ser encontradas no manual do allegro 5, disponivel em https://www.allegro.cc/manual/5/primitives.html
@@ -121,6 +108,7 @@ struct triangle {
     float colorG;
     float colorB;
     float thickness; // 0 = hairline
+    int filled; // 1 = Filled -> 0 = not filled
 };
 
 // Define a estrutura retangulo
@@ -138,6 +126,7 @@ struct rectangle {
     float colorG;
     float colorB;
     float thickness; // 0 = hairline
+    int filled; // 1 = Filled -> 0 = not filled
 };
 
 // Define a estrutura elipse
@@ -151,6 +140,7 @@ struct elipse {
     float colorG;
     float colorB;
     float thickness; // 0 = hairline
+    int filled; // 1 = Filled -> 0 = not filled
 };
 
 // Define a estrutura circulo
@@ -164,6 +154,7 @@ struct circle {
     float colorG;
     float colorB;
     float thickness; // 0 = hairline
+    int filled; // 1 = Filled -> 0 = not filled
 };
 
 // Define a estrutura circulo
@@ -189,15 +180,17 @@ int graphic_init(void);
 void fechajanela(void);
 void exibir_texto_centralizado(char msg[20]);
 void atualiza_tela(bool *pause,ListaGen* Lista);
+void le_valor_teclado(float* valor);
 
 //******** Funcao principal do program ***********//
 int cad_system(void);
 
-//********* Prototipagem das funcoes ************/
-void insere_linha(float x1,float y1,float x2,float y2,float corR,float corG,float corB,float thick,ListaGen** Lista);
-void insere_triangulo(float x1,float y1,float x2,float y2,float x3,float y3,float corR,float corG,float corB,float thick,ListaGen** Lista);
-void insere_retangulo(float x1,float y1,float x2,float y2,float rx, float ry,float corR,float corG,float corB,float thick,ListaGen** Lista);
-void insere_elipse(float cx,float cy,float rx,float ry,float corR,float corG,float corB,float thick,ListaGen** Lista);
-void insere_circulo(float cx,float cy,float r,float corR,float corG,float corB,float thick,ListaGen** Lista);
-void insere_arco(float cx,float cy,float r,float start_theta,float delta_theta,float corR,float corG,float corB,float thick,ListaGen** Lista);
+//********* Prototipagem das funcoes de insercao do usuario************/
+void insere_linha_allegro(const float corR,const float corG,const float corB,ListaGen** Lista);
+void insere_triangulo_allegro(const float corR,const float corG,const float corB,const int filled,ListaGen** Lista);
+void insere_retangulo_allegro(const float corR,const float corG,const float corB,const int rounded,const int filled,ListaGen** Lista);
+void insere_elipse_allegro(const float corR,const float corG,const float corB,const int filled,ListaGen** Lista);
+void insere_circulo_allegro(const float corR,const float corG,const float corB,const int filled,ListaGen** Lista);
+void insere_arco(const float corR,const float corG,const float corB,ListaGen** Lista);
+//void insere_arco(float cx,float cy,float r,float start_theta,float delta_theta,float corR,float corG,float corB,float thick,ListaGen** Lista);
 void imprime_lista(ListaGen* Lista);
