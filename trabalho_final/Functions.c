@@ -100,10 +100,6 @@ int graphic_init()
     al_set_target_bitmap(al_get_backbuffer(janela));
     al_clear_to_color(al_map_rgb(255, 255, 0));
 
-    //Mensagem de inicializacao
-    //exibir_texto_centralizado("PK Cad V1.0 esta inicializando.");
-    //al_flip_display();
-
     // Torna apto o uso de mouse na aplicação
     if (!al_install_mouse())
     {
@@ -335,13 +331,6 @@ void fechajanela(){
 
 	printf("\n Aplicacao encerrada.");
 	//system("sleep 1");
-}
-
-void exibir_texto_centralizado(char msg[20]) {
-        al_set_target_bitmap(al_get_backbuffer(janela));
-        al_draw_text(font, al_map_rgb(0, 0, 0), LARGURA_TELA / 2,
-                     (ALTURA_TELA - al_get_font_ascent(font)) / 2,
-                     ALLEGRO_ALIGN_CENTRE, msg);
 }
 
 void atualiza_tela(bool *pause,ListaGen* Lista) {
@@ -588,72 +577,96 @@ int cad_system(void)
                         {
                             if(add_flag)
                                 insere_linha_allegro(corR,corG,corB,&Lista);
+                            else
+                                remove_draw(LINE,NOT_FILLED,NOT_ROUNDED,&Lista);
                             printf("\nBotao linha simples");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 1*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 2*BOTAO_A -desloc)
                         {
                             if(add_flag)
                                 insere_triangulo_allegro(corR,corG,corB,NOT_FILLED,&Lista);
+                            else
+                                remove_draw(TRIANGLE,NOT_FILLED,NOT_ROUNDED,&Lista);
                             printf("\nBotao triangulo simples");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 2*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 3*BOTAO_A -desloc)
                         {
                             if(add_flag)
                                 insere_triangulo_allegro(corR,corG,corB,FILLED,&Lista);
+                            else
+                                remove_draw(TRIANGLE,FILLED,NOT_ROUNDED,&Lista);
                             printf("\nBotao triangulo colorido");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 3*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 4*BOTAO_A -desloc)
                         {
                             if(add_flag)
                                 insere_retangulo_allegro(corR,corG,corB,NOT_ROUNDED,NOT_FILLED,&Lista);
+                            else
+                                remove_draw(RECTANGLE,NOT_FILLED,NOT_ROUNDED,&Lista);
                             printf("\nBotao retangulo simples");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 4*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 5*BOTAO_A -desloc)
                         {
                             if(add_flag)
                                 insere_retangulo_allegro(corR,corG,corB,NOT_ROUNDED,FILLED,&Lista);
+                            else
+                                remove_draw(RECTANGLE,FILLED,NOT_ROUNDED,&Lista);
                             printf("\nBotao retangulo colorido");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 5*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 6*BOTAO_A -desloc)
                         {
                             if(add_flag)
                                 insere_retangulo_allegro(corR,corG,corB,ROUNDED,NOT_FILLED,&Lista);
+                            else
+                                remove_draw(RECTANGLE,NOT_FILLED,ROUNDED,&Lista);
                             printf("\nBotao retangulo arredondado");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 6*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 7*BOTAO_A -desloc)
                         {
                             if(add_flag)
                                 insere_retangulo_allegro(corR,corG,corB,ROUNDED,FILLED,&Lista);
+                            else
+                                remove_draw(RECTANGLE,FILLED,ROUNDED,&Lista);
                             printf("\nBotao retangulo arredondado colorido");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 7*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 8*BOTAO_A -desloc)
                         {
                             if(add_flag)
                                 insere_elipse_allegro(corR,corG,corB,NOT_FILLED,&Lista);
+                            else
+                                remove_draw(ELIPSE,NOT_FILLED,NOT_ROUNDED,&Lista);
                             printf("\nBotao elipse simples");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 8*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 9*BOTAO_A -desloc)
                         {
                             if(add_flag)
                                 insere_elipse_allegro(corR,corG,corB,FILLED,&Lista);
+                            else
+                                remove_draw(ELIPSE,FILLED,NOT_ROUNDED,&Lista);
                             printf("\nBotao elipse colorida");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 9*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 10*BOTAO_A -desloc)
                         {
                             if(add_flag)
                                 insere_circulo_allegro(corR,corG,corB,NOT_FILLED,&Lista);
+                            else
+                                remove_draw(CIRCLE,NOT_FILLED,NOT_ROUNDED,&Lista);
                             printf("\nBotao circulo simples");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 10*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 11*BOTAO_A -desloc)
                         {
                             if(add_flag)
                                 insere_circulo_allegro(corR,corG,corB,FILLED,&Lista);
+                            else
+                                remove_draw(CIRCLE,FILLED,NOT_ROUNDED,&Lista);
                             printf("\nBotao circulo colorido");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 11*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 12*BOTAO_A -desloc)
                         {
                             if(add_flag)
-                                insere_arco(corR,corG,corB,&Lista);
+                                insere_arco_allegro(corR,corG,corB,&Lista);
+                            else
+                                remove_draw(ARC,NOT_FILLED,NOT_ROUNDED,&Lista);
                             printf("\nBotao arco");
                         }
                     }
@@ -754,19 +767,19 @@ void insere_linha_allegro(const float corR,const float corG,const float corB,Lis
     linhanovo->colorG = corG;
     linhanovo->colorB = corB;
 
-    al_show_native_message_box(NULL,"Linha","","Digite a coordenada x1 e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Linha","","Digite a coordenada x1 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     linhanovo->x1 = value;
-    al_show_native_message_box(NULL,"Linha","","Digite a coordenada y1 e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Linha","","Digite a coordenada y1 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     linhanovo->y1 = value;
-    al_show_native_message_box(NULL,"Linha","","Digite a coordenada x2 e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Linha","","Digite a coordenada x2 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     linhanovo->x2 = value;
-    al_show_native_message_box(NULL,"Linha","","Digite a coordenada y2 e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Linha","","Digite a coordenada y2 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     linhanovo->y2 = value;
-    al_show_native_message_box(NULL,"Linha","","Digite a espessura da linha e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Linha","","Digite a espessura da linha e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     linhanovo->thickness = value;
 
@@ -790,27 +803,27 @@ void insere_triangulo_allegro(const float corR,const float corG,const float corB
     trinovo->colorB = corB;
     trinovo->filled = filled;
 
-    al_show_native_message_box(NULL,"Triangulo","","Digite a coordenada x1 e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Triangulo","","Digite a coordenada x1 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     trinovo->x1 = value;
-    al_show_native_message_box(NULL,"Triangulo","","Digite a coordenada y1 e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Triangulo","","Digite a coordenada y1 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     trinovo->y1 = value;
-    al_show_native_message_box(NULL,"Triangulo","","Digite a coordenada x2 e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Triangulo","","Digite a coordenada x2 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     trinovo->x2 = value;
-    al_show_native_message_box(NULL,"Triangulo","","Digite a coordenada y2 e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Triangulo","","Digite a coordenada y2 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     trinovo->y2 = value;
-    al_show_native_message_box(NULL,"Triangulo","","Digite a coordenada x3 e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Triangulo","","Digite a coordenada x3 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     trinovo->x3 = value;
-    al_show_native_message_box(NULL,"Triangulo","","Digite a coordenada y3 e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Triangulo","","Digite a coordenada y3 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     trinovo->y1 = value;
     if(!filled)
     {
-        al_show_native_message_box(NULL,"Triangulo","","Digite a espessura da linha e tecle <ENTER>.",NULL,NULL);
+        al_show_native_message_box(NULL,"Inserir Triangulo","","Digite a espessura da linha e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
         le_valor_teclado(&value);
         trinovo->thickness = value;
     }
@@ -837,25 +850,25 @@ void insere_retangulo_allegro(const float corR,const float corG,const float corB
     retnovo->colorB = corB;
     retnovo->filled = filled;
 
-    al_show_native_message_box(NULL,"Retangulo","","Digite a coordenada x1 e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Retangulo","","Digite a coordenada x1 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     retnovo->x1 = value;
-    al_show_native_message_box(NULL,"Retangulo","","Digite a coordenada y1 e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Retangulo","","Digite a coordenada y1 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     retnovo->y1 = value;
-    al_show_native_message_box(NULL,"Retangulo","","Digite a coordenada x2 e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Retangulo","","Digite a coordenada x2 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     retnovo->x2 = value;
-    al_show_native_message_box(NULL,"Retangulo","","Digite a coordenada y2 e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Retangulo","","Digite a coordenada y2 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     retnovo->y2 = value;
 
     if(rounded)
     {
-        al_show_native_message_box(NULL,"Retangulo","","Digite o raio do arredondamento em X e tecle <ENTER>.",NULL,NULL);
+        al_show_native_message_box(NULL,"Inserir Retangulo","","Digite o raio do arredondamento em X e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
         le_valor_teclado(&value);
         retnovo->rx = value;
-        al_show_native_message_box(NULL,"Retangulo","","Digite o raio do arredondamento em Y e tecle <ENTER>.",NULL,NULL);
+        al_show_native_message_box(NULL,"Inserir Retangulo","","Digite o raio do arredondamento em Y e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
         le_valor_teclado(&value);
         retnovo->ry = value;
     }
@@ -866,7 +879,7 @@ void insere_retangulo_allegro(const float corR,const float corG,const float corB
     }
     if(!filled)
     {
-        al_show_native_message_box(NULL,"Retangulo","","Digite a espessura da linha e tecle <ENTER>.",NULL,NULL);
+        al_show_native_message_box(NULL,"Inserir Retangulo","","Digite a espessura da linha e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
         le_valor_teclado(&value);
         retnovo->thickness = value;
     }
@@ -893,21 +906,21 @@ void insere_elipse_allegro(const float corR,const float corG,const float corB,co
     elipnovo->colorB = corB;
     elipnovo->filled = filled;
 
-    al_show_native_message_box(NULL,"Elipse","","Digite a coordenada do centro X e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Elipse","","Digite a coordenada do centro X e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     elipnovo->cx = value;
-    al_show_native_message_box(NULL,"Elipse","","Digite a coordenada do centro Y e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Elipse","","Digite a coordenada do centro Y e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     elipnovo->cy = value;
-    al_show_native_message_box(NULL,"Elipse","","Digite o raio em X e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Elipse","","Digite o raio em X e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     elipnovo->rx = value;
-    al_show_native_message_box(NULL,"Elipse","","Digite o raio em Y e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Elipse","","Digite o raio em Y e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     elipnovo->ry = value;
     if(!filled)
     {
-        al_show_native_message_box(NULL,"Elipse","","Digite a espessura da linha e tecle <ENTER>.",NULL,NULL);
+        al_show_native_message_box(NULL,"Inserir Elipse","","Digite a espessura da linha e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
         le_valor_teclado(&value);
         elipnovo->thickness = value;
     }
@@ -934,18 +947,18 @@ void insere_circulo_allegro(const float corR,const float corG,const float corB,c
     circnovo->colorB = corB;
     circnovo->filled = filled;
 
-    al_show_native_message_box(NULL,"Circulo","","Digite a coordenada do centro X e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Circulo","","Digite a coordenada do centro X e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     circnovo->cx = value;
-    al_show_native_message_box(NULL,"Circulo","","Digite a coordenada do centro Y e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Circulo","","Digite a coordenada do centro Y e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     circnovo->cy = value;
-    al_show_native_message_box(NULL,"Circulo","","Digite o raio e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Circulo","","Digite o raio e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     circnovo->r = value;
     if(!filled)
     {
-        al_show_native_message_box(NULL,"Circulo","","Digite a espessura da linha e tecle <ENTER>.",NULL,NULL);
+        al_show_native_message_box(NULL,"Inserir Circulo","","Digite a espessura da linha e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
         le_valor_teclado(&value);
         circnovo->thickness = value;
     }
@@ -958,7 +971,7 @@ void insere_circulo_allegro(const float corR,const float corG,const float corB,c
     *Lista = novo; // aponta para o novo item da lista
 }
 
-void insere_arco(const float corR,const float corG,const float corB,ListaGen** Lista)
+void insere_arco_allegro(const float corR,const float corG,const float corB,ListaGen** Lista)
 {
     ListaGen* novo = (ListaGen*) malloc(sizeof(ListaGen));
     if (novo == NULL) exit(EXIT_FAILURE); // nao ha mais espaco na memoria
@@ -971,22 +984,22 @@ void insere_arco(const float corR,const float corG,const float corB,ListaGen** L
     arconovo->colorG = corG;
     arconovo->colorB = corB;
 
-    al_show_native_message_box(NULL,"Arco","","Digite a coordenada do centro X e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Arco","","Digite a coordenada do centro X e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     arconovo->cx = value;
-    al_show_native_message_box(NULL,"Arco","","Digite a coordenada do centro Y e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Arco","","Digite a coordenada do centro Y e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     arconovo->cy = value;
-    al_show_native_message_box(NULL,"Arco","","Digite o raio e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Arco","","Digite o raio e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     arconovo->r = value;
-    al_show_native_message_box(NULL,"Arco","","Digite o angulo inicial e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Arco","","Digite o angulo inicial e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     arconovo->start_theta = value*0.0174532925;
-    al_show_native_message_box(NULL,"Arco","","Digite o intervalo do angulo (delta) e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Arco","","Digite o intervalo do angulo (delta) e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     arconovo->delta_theta = value*0.0174532925;
-    al_show_native_message_box(NULL,"Arco","","Digite a espessura da linha e tecle <ENTER>.",NULL,NULL);
+    al_show_native_message_box(NULL,"Inserir Arco","","Digite a espessura da linha e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     arconovo->thickness = value;
 
@@ -994,6 +1007,201 @@ void insere_arco(const float corR,const float corG,const float corB,ListaGen** L
     novo->info = arconovo;
     novo->prox = *Lista;
     *Lista = novo; // aponta para o novo item da lista
+}
+
+//********* Funcao retira elemento da lista *************
+void remove_draw(const int type,const int filled,const int rounded,ListaGen** Lista)
+{
+    // Obtencao dos parametros para deletar
+    float value;
+    float parametro[6]; // Maior quantidade de parametros desejados sera o do triangulo
+    switch(type)
+    {
+        case LINE:
+            al_show_native_message_box(NULL,"Remover Linha","","Digite a coordenada x1 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[0] = value;
+            al_show_native_message_box(NULL,"Remover Linha","","Digite a coordenada y1 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[1] = value;
+            al_show_native_message_box(NULL,"Remover Linha","","Digite a coordenada x2 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[2] = value;
+            al_show_native_message_box(NULL,"Remover Linha","","Digite a coordenada y2 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[3] = value;
+        break;
+        case TRIANGLE:
+            al_show_native_message_box(NULL,"Remover Triangulo","","Digite a coordenada x1 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[0] = value;
+            al_show_native_message_box(NULL,"Remover Triangulo","","Digite a coordenada y1 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[1] = value;
+            al_show_native_message_box(NULL,"Remover Triangulo","","Digite a coordenada x2 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[2] = value;
+            al_show_native_message_box(NULL,"Remover Triangulo","","Digite a coordenada y2 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[3] = value;
+            al_show_native_message_box(NULL,"Remover Triangulo","","Digite a coordenada x3 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[4] = value;
+            al_show_native_message_box(NULL,"Remover Triangulo","","Digite a coordenada y3 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[5] = value;
+        break;
+        case RECTANGLE:
+            al_show_native_message_box(NULL,"Remover Retangulo","","Digite a coordenada x1 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[0] = value;
+            al_show_native_message_box(NULL,"Remover Retangulo","","Digite a coordenada y1 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[1] = value;
+            al_show_native_message_box(NULL,"Remover Retangulo","","Digite a coordenada x2 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[2] = value;
+            al_show_native_message_box(NULL,"Remover Retangulo","","Digite a coordenada y2 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[3] = value;
+        break;
+        case ELIPSE:
+            al_show_native_message_box(NULL,"Remover Elipse","","Digite a coordenada do centro X e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[0] = value;
+            al_show_native_message_box(NULL,"Remover Elipse","","Digite a coordenada do centro Y e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[1] = value;
+            al_show_native_message_box(NULL,"Remover Elipse","","Digite o raio em X e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[2] = value;
+            al_show_native_message_box(NULL,"Remover Elipse","","Digite o raio em Y e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[3] = value;
+        break;
+        case CIRCLE:
+            al_show_native_message_box(NULL,"Remover Circulo","","Digite a coordenada do centro X e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[0] = value;
+            al_show_native_message_box(NULL,"Remover Circulo","","Digite a coordenada do centro Y e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[1] = value;
+            al_show_native_message_box(NULL,"Remover Circulo","","Digite o raio e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[2] = value;
+        break;
+        case ARC:
+            al_show_native_message_box(NULL,"Remover Arco","","Digite a coordenada do centro X e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[0] = value;
+            al_show_native_message_box(NULL,"Remover Arco","","Digite a coordenada do centro Y e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[1] = value;
+            al_show_native_message_box(NULL,"Remover Arco","","Digite o raio e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[2] = value;
+        break;
+        default:
+            printf("\nERRO: Algum erro foi encontrado na chamada da funcao remove_draw");
+        break;
+    }
+
+    // Ponteiros para busca e salvar o anterior
+    ListaGen* pointList = *Lista;
+    ListaGen* ant = NULL;
+    // Variavel para retornar se encontrou
+    int found = 0;
+    // Ponteiros para busca
+    Linha* pointLinha;
+    Tri* pointTri;
+    Ret* pointRet;
+    Elip* pointElip;
+    Circ* pointCirc;
+    Arco* pointArco;
+
+    // procura elemento na lista, guardando anterior
+    while (pointList != NULL && !found)
+    {
+        if(pointList->tipo == type)
+        {
+            switch(pointList->tipo)
+            {
+                case LINE:
+                    pointLinha = pointList->info;
+                    if((pointLinha->x1==parametro[0]) & (pointLinha->y1==parametro[1]) & (pointLinha->x2==parametro[2]) & (pointLinha->y2==parametro[3]))
+                        found = 1;
+                    break;
+                case TRIANGLE:
+                    pointTri = pointList->info;
+                    if((pointTri->x1==parametro[0]) & (pointTri->y1==parametro[1]) & (pointTri->x2==parametro[2]) & (pointTri->y2==parametro[3]) & (pointTri->x3==parametro[4]) & (pointTri->y3==parametro[5]))
+                        found = 1;
+                    break;
+                case RECTANGLE:
+                    pointRet = pointList->info;
+                    if((pointRet->x1==parametro[0]) & (pointRet->y1==parametro[1]) & (pointRet->x2==parametro[2]) & (pointRet->y2==parametro[3]))
+                        found = 1;
+                    break;
+                case ELIPSE:
+                    pointElip = pointList->info;
+                    if((pointElip->cx==parametro[0]) & (pointElip->cy==parametro[1]) & (pointElip->rx==parametro[2]) & (pointElip->ry==parametro[3]))
+                        found = 1;
+                    break;
+                case CIRCLE:
+                    pointCirc = pointList->info;
+                    if((pointCirc->cx==parametro[0]) & (pointCirc->cy==parametro[1]) & (pointCirc->r==parametro[2]))
+                        found = 1;
+                    break;
+                case ARC:
+                    pointArco = pointList->info;
+                    if((pointArco->cx==parametro[0]) & (pointArco->cy==parametro[1]) & (pointArco->r==parametro[2]))
+                        found = 1;
+                    break;
+                case SPLINE: break;
+                case RIBBON: break;
+                default:
+                    printf("\nErro: formato descohecido.");
+            }
+        }
+        if(found != 1)
+        {
+            ant = pointList;
+            pointList = pointList->prox;
+        }
+    }
+
+    if(found==1)
+    {
+        // Desloca elemento da lista generica
+        if (ant == NULL) // retira elemento do inicio
+            *Lista = pointList->prox;
+        else // retira elemento do meio da lista
+            ant->prox = pointList->prox;
+        free(pointList);
+        //al_show_native_message_box(NULL,"Aviso","","O elemento foi encontrado e removido. Tecle <ENTER> para continuar.",NULL,NULL); // Apenas para debug
+
+        // Desaloca elemento em si
+        switch(pointList->tipo)
+        {
+            case LINE:
+                free(pointLinha); break;
+            case TRIANGLE:
+                free(pointTri); break;
+            case RECTANGLE:
+                free(pointRet); break;
+            case ELIPSE:
+                free(pointElip); break;
+            case CIRCLE:
+                free(pointCirc); break;
+            case ARC:
+                free(pointArco); break;
+            case SPLINE: printf("\nErro: formato nao implementado."); break;
+            case RIBBON: printf("\nErro: formato nao implementado."); break;
+            default:
+                printf("\nErro: formato descohecido.");
+        }
+    }
+    else
+        al_show_native_message_box(NULL,"Aviso","","O elemento nao foi encontrado. Tecle <ENTER> para continuar.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
 }
 
 // Imprime a lista no console

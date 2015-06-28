@@ -20,6 +20,7 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_ttf.h>
+#include <allegro5/allegro_native_dialog.h>
 
 #define PI 3.14159265
 #define FPS 60
@@ -178,7 +179,6 @@ struct arc {
 //********* Funcoes graficas *************//
 int graphic_init(void);
 void fechajanela(void);
-void exibir_texto_centralizado(char msg[20]);
 void atualiza_tela(bool *pause,ListaGen* Lista);
 void le_valor_teclado(float* valor);
 
@@ -191,6 +191,7 @@ void insere_triangulo_allegro(const float corR,const float corG,const float corB
 void insere_retangulo_allegro(const float corR,const float corG,const float corB,const int rounded,const int filled,ListaGen** Lista);
 void insere_elipse_allegro(const float corR,const float corG,const float corB,const int filled,ListaGen** Lista);
 void insere_circulo_allegro(const float corR,const float corG,const float corB,const int filled,ListaGen** Lista);
-void insere_arco(const float corR,const float corG,const float corB,ListaGen** Lista);
-//void insere_arco(float cx,float cy,float r,float start_theta,float delta_theta,float corR,float corG,float corB,float thick,ListaGen** Lista);
+void insere_arco_allegro(const float corR,const float corG,const float corB,ListaGen** Lista);
+void remove_draw(const int type,const int filled,const int rounded,ListaGen** Lista);
+//********** imprime a lista de elementos no console ***************/
 void imprime_lista(ListaGen* Lista);
