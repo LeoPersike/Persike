@@ -192,6 +192,6 @@ void insere_retangulo_allegro(const float corR,const float corG,const float corB
 void insere_elipse_allegro(const float corR,const float corG,const float corB,const int filled,ListaGen** Lista);
 void insere_circulo_allegro(const float corR,const float corG,const float corB,const int filled,ListaGen** Lista);
 void insere_arco_allegro(const float corR,const float corG,const float corB,ListaGen** Lista);
-void remove_draw(const int type,const int filled,const int rounded,ListaGen** Lista);
+void remove_draw(const int type,const int corR,const int corG,const int corB,const int filled,const int rounded,ListaGen** Lista);
 //********** imprime a lista de elementos no console ***************/
 void imprime_lista(ListaGen* Lista);

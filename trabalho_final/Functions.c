@@ -387,7 +387,7 @@ void atualiza_tela(bool *pause,ListaGen* Lista) {
                     break;
                 case ARC:
                     pointArco = pointList->info;
-                    al_draw_arc(pointArco->cx,pointArco->cy,pointArco->r,pointArco->start_theta,pointArco->delta_theta,al_map_rgb(pointArco->colorR,pointArco->colorG,pointArco->colorB),pointArco->thickness);
+                    al_draw_arc(pointArco->cx,pointArco->cy,pointArco->r,pointArco->start_theta*0.0174532925,pointArco->delta_theta*0.0174532925,al_map_rgb(pointArco->colorR,pointArco->colorG,pointArco->colorB),pointArco->thickness);
                     break;
                 default:
                     printf("\nErro Allegro5: Tipo nao reconhecido.");
@@ -472,63 +472,58 @@ void le_valor_teclado(float* valor)
                 }
                 else if (evento.keyboard.keycode == ALLEGRO_KEY_0)
                 {
-                    state = WAITING;
                     resultado = resultado*10;
                     resultado = resultado +0;
                 }
                 else if (evento.keyboard.keycode == ALLEGRO_KEY_1)
                 {
-                    state = WAITING;
                     resultado = resultado*10;
                     resultado = resultado+1;
                 }
                 else if (evento.keyboard.keycode == ALLEGRO_KEY_2)
                 {
-                    state = WAITING;
                     resultado = resultado*10;
                     resultado = resultado+2;
                 }
                 else if (evento.keyboard.keycode == ALLEGRO_KEY_3)
                 {
-                    state = WAITING;
                     resultado = resultado*10;
                     resultado = resultado+3;
                 }
                 else if (evento.keyboard.keycode == ALLEGRO_KEY_4)
                 {
-                    state = WAITING;
                     resultado = resultado*10;
                     resultado = resultado+4;
                 }
                 else if (evento.keyboard.keycode == ALLEGRO_KEY_5)
                 {
-                    state = WAITING;
                     resultado = resultado*10;
                     resultado = resultado+5;
                 }
                 else if (evento.keyboard.keycode == ALLEGRO_KEY_6)
                 {
-                    state = WAITING;
                     resultado = resultado*10;
                     resultado = resultado+6;
                 }
                 else if (evento.keyboard.keycode == ALLEGRO_KEY_7)
                 {
-                    state = WAITING;
                     resultado = resultado*10;
                     resultado = resultado+7;
                 }
                 else if (evento.keyboard.keycode == ALLEGRO_KEY_8)
                 {
-                    state = WAITING;
                     resultado = resultado*10;
                     resultado = resultado+8;
                 }
                 else if (evento.keyboard.keycode == ALLEGRO_KEY_9)
                 {
-                    state = WAITING;
                     resultado = resultado*10;
                     resultado = resultado+9;
+                }
+                else if (evento.keyboard.keycode == ALLEGRO_KEY_BACKSPACE)
+                {
+                    resultado = (int)resultado/10;
+                    // Foi usada a conversao int para zerar as casas apos a virgula.
                 }
             }
         }
@@ -578,96 +573,96 @@ int cad_system(void)
                             if(add_flag)
                                 insere_linha_allegro(corR,corG,corB,&Lista);
                             else
-                                remove_draw(LINE,NOT_FILLED,NOT_ROUNDED,&Lista);
-                            printf("\nBotao linha simples");
+                                remove_draw(LINE,corR,corG,corB,NOT_FILLED,NOT_ROUNDED,&Lista);
+                            //printf("\nBotao linha simples");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 1*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 2*BOTAO_A -desloc)
                         {
                             if(add_flag)
                                 insere_triangulo_allegro(corR,corG,corB,NOT_FILLED,&Lista);
                             else
-                                remove_draw(TRIANGLE,NOT_FILLED,NOT_ROUNDED,&Lista);
-                            printf("\nBotao triangulo simples");
+                                remove_draw(TRIANGLE,corR,corG,corB,NOT_FILLED,NOT_ROUNDED,&Lista);
+                            //printf("\nBotao triangulo simples");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 2*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 3*BOTAO_A -desloc)
                         {
                             if(add_flag)
                                 insere_triangulo_allegro(corR,corG,corB,FILLED,&Lista);
                             else
-                                remove_draw(TRIANGLE,FILLED,NOT_ROUNDED,&Lista);
-                            printf("\nBotao triangulo colorido");
+                                remove_draw(TRIANGLE,corR,corG,corB,FILLED,NOT_ROUNDED,&Lista);
+                            //printf("\nBotao triangulo colorido");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 3*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 4*BOTAO_A -desloc)
                         {
                             if(add_flag)
                                 insere_retangulo_allegro(corR,corG,corB,NOT_ROUNDED,NOT_FILLED,&Lista);
                             else
-                                remove_draw(RECTANGLE,NOT_FILLED,NOT_ROUNDED,&Lista);
-                            printf("\nBotao retangulo simples");
+                                remove_draw(RECTANGLE,corR,corG,corB,NOT_FILLED,NOT_ROUNDED,&Lista);
+                            //printf("\nBotao retangulo simples");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 4*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 5*BOTAO_A -desloc)
                         {
                             if(add_flag)
                                 insere_retangulo_allegro(corR,corG,corB,NOT_ROUNDED,FILLED,&Lista);
                             else
-                                remove_draw(RECTANGLE,FILLED,NOT_ROUNDED,&Lista);
-                            printf("\nBotao retangulo colorido");
+                                remove_draw(RECTANGLE,corR,corG,corB,FILLED,NOT_ROUNDED,&Lista);
+                            //printf("\nBotao retangulo colorido");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 5*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 6*BOTAO_A -desloc)
                         {
                             if(add_flag)
                                 insere_retangulo_allegro(corR,corG,corB,ROUNDED,NOT_FILLED,&Lista);
                             else
-                                remove_draw(RECTANGLE,NOT_FILLED,ROUNDED,&Lista);
-                            printf("\nBotao retangulo arredondado");
+                                remove_draw(RECTANGLE,corR,corG,corB,NOT_FILLED,ROUNDED,&Lista);
+                            //printf("\nBotao retangulo arredondado");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 6*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 7*BOTAO_A -desloc)
                         {
                             if(add_flag)
                                 insere_retangulo_allegro(corR,corG,corB,ROUNDED,FILLED,&Lista);
                             else
-                                remove_draw(RECTANGLE,FILLED,ROUNDED,&Lista);
-                            printf("\nBotao retangulo arredondado colorido");
+                                remove_draw(RECTANGLE,corR,corG,corB,FILLED,ROUNDED,&Lista);
+                            //printf("\nBotao retangulo arredondado colorido");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 7*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 8*BOTAO_A -desloc)
                         {
                             if(add_flag)
                                 insere_elipse_allegro(corR,corG,corB,NOT_FILLED,&Lista);
                             else
-                                remove_draw(ELIPSE,NOT_FILLED,NOT_ROUNDED,&Lista);
-                            printf("\nBotao elipse simples");
+                                remove_draw(ELIPSE,corR,corG,corB,NOT_FILLED,NOT_ROUNDED,&Lista);
+                            //printf("\nBotao elipse simples");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 8*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 9*BOTAO_A -desloc)
                         {
                             if(add_flag)
                                 insere_elipse_allegro(corR,corG,corB,FILLED,&Lista);
                             else
-                                remove_draw(ELIPSE,FILLED,NOT_ROUNDED,&Lista);
-                            printf("\nBotao elipse colorida");
+                                remove_draw(ELIPSE,corR,corG,corB,FILLED,NOT_ROUNDED,&Lista);
+                            //printf("\nBotao elipse colorida");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 9*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 10*BOTAO_A -desloc)
                         {
                             if(add_flag)
                                 insere_circulo_allegro(corR,corG,corB,NOT_FILLED,&Lista);
                             else
-                                remove_draw(CIRCLE,NOT_FILLED,NOT_ROUNDED,&Lista);
-                            printf("\nBotao circulo simples");
+                                remove_draw(CIRCLE,corR,corG,corB,NOT_FILLED,NOT_ROUNDED,&Lista);
+                            //printf("\nBotao circulo simples");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 10*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 11*BOTAO_A -desloc)
                         {
                             if(add_flag)
                                 insere_circulo_allegro(corR,corG,corB,FILLED,&Lista);
                             else
-                                remove_draw(CIRCLE,FILLED,NOT_ROUNDED,&Lista);
-                            printf("\nBotao circulo colorido");
+                                remove_draw(CIRCLE,corR,corG,corB,FILLED,NOT_ROUNDED,&Lista);
+                            //printf("\nBotao circulo colorido");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 11*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 12*BOTAO_A -desloc)
                         {
                             if(add_flag)
                                 insere_arco_allegro(corR,corG,corB,&Lista);
                             else
-                                remove_draw(ARC,NOT_FILLED,NOT_ROUNDED,&Lista);
-                            printf("\nBotao arco");
+                                remove_draw(ARC,corR,corG,corB,NOT_FILLED,NOT_ROUNDED,&Lista);
+                            //printf("\nBotao arco");
                         }
                     }
 
@@ -677,68 +672,67 @@ int cad_system(void)
                         if(evento.mouse.y <= ALTURA_TELA - 12*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 13*BOTAO_A -desloc)
                         {
                             add_flag = 0;
-                            printf("\nBotao REMOVE");
+                            //printf("\nBotao REMOVE");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 13*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 14*BOTAO_A -desloc)
                         {
                             add_flag = 1;
-                            printf("\nBotao ADD");
+                            //printf("\nBotao ADD");
                         }
                     }
 
                     // Botoes de cores
                     if (evento.mouse.x >= LARGURA_TELA - 2*BOTAO_L && evento.mouse.x <= LARGURA_TELA - 1*BOTAO_L)
                     {
-
                         if(evento.mouse.y <= ALTURA_TELA - 0*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - BOTAO_A -desloc)
                         {
                             corR = 0; corG = 0; corB = 0;
-                            printf("\nCor: Preto.");
+                            //printf("\nCor: Preto.");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 1*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 2*BOTAO_A -desloc)
                         {
                             corR = 94; corG = 28; corB = 13;
-                            printf("\nCor: Marrom");
+                            //printf("\nCor: Marrom");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 2*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 3*BOTAO_A -desloc)
                         {
                             corR = 255; corG = 0; corB = 0;
-                            printf("\nCor: Vermelho");
+                            //printf("\nCor: Vermelho");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 3*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 4*BOTAO_A -desloc)
                         {
                             corR = 255; corG = 116; corB = 21;
-                            printf("\nCor: Laranja");
+                            //printf("\nCor: Laranja");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 4*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 5*BOTAO_A -desloc)
                         {
                             corR = 255; corG = 217; corB = 0;
-                            printf("\nCor: Amarelo");
+                            //printf("\nCor: Amarelo");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 5*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 6*BOTAO_A -desloc)
                         {
                             corR = 0; corG = 255; corB = 0;
-                            printf("\nCor: Verde");
+                            //printf("\nCor: Verde");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 6*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 7*BOTAO_A -desloc)
                         {
                             corR = 0; corG = 0; corB = 255;
-                            printf("\nCor: Azul");
+                            //printf("\nCor: Azul");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 7*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 8*BOTAO_A -desloc)
                         {
                             corR = 69; corG = 0; corB = 68;
-                            printf("\nCor: Violeta");
+                            //printf("\nCor: Violeta");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 8*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 9*BOTAO_A -desloc)
                         {
                             corR = 117; corG = 117; corB = 117;
-                            printf("\nCor: Cinza");
+                            //printf("\nCor: Cinza");
                         }
                         else if(evento.mouse.y <= ALTURA_TELA - 9*BOTAO_A - desloc && evento.mouse.y >= ALTURA_TELA - 10*BOTAO_A -desloc)
                         {
                             corR = 255; corG = 255; corB = 255;
-                            printf("\nCor: Branca");
+                            //printf("\nCor: Branca");
                         }
                     }
                 }
@@ -995,10 +989,10 @@ void insere_arco_allegro(const float corR,const float corG,const float corB,List
     arconovo->r = value;
     al_show_native_message_box(NULL,"Inserir Arco","","Digite o angulo inicial e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
-    arconovo->start_theta = value*0.0174532925;
+    arconovo->start_theta = value;
     al_show_native_message_box(NULL,"Inserir Arco","","Digite o intervalo do angulo (delta) e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
-    arconovo->delta_theta = value*0.0174532925;
+    arconovo->delta_theta = value;
     al_show_native_message_box(NULL,"Inserir Arco","","Digite a espessura da linha e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
     le_valor_teclado(&value);
     arconovo->thickness = value;
@@ -1010,11 +1004,22 @@ void insere_arco_allegro(const float corR,const float corG,const float corB,List
 }
 
 //********* Funcao retira elemento da lista *************
-void remove_draw(const int type,const int filled,const int rounded,ListaGen** Lista)
+void remove_draw(const int type,const int corR,const int corG,const int corB,const int filled,const int rounded,ListaGen** Lista)
 {
     // Obtencao dos parametros para deletar
     float value;
     float parametro[6]; // Maior quantidade de parametros desejados sera o do triangulo
+
+    // Ponteiros para busca e salvar o anterior
+    ListaGen* pointList = *Lista;
+    ListaGen* ant = NULL;
+
+    if(pointList == NULL)
+    {
+        al_show_native_message_box(NULL,"Aviso","","O desenho esta em branco.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+        return;
+    }
+
     switch(type)
     {
         case LINE:
@@ -1064,6 +1069,15 @@ void remove_draw(const int type,const int filled,const int rounded,ListaGen** Li
             al_show_native_message_box(NULL,"Remover Retangulo","","Digite a coordenada y2 e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
             le_valor_teclado(&value);
             parametro[3] = value;
+            if(rounded)
+            {
+                al_show_native_message_box(NULL,"Remover Retangulo","","Digite o raio do arredondamento em X e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+                le_valor_teclado(&value);
+                parametro[4] = value;
+                al_show_native_message_box(NULL,"Remover Retangulo","","Digite o raio do arredondamento em Y e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+                le_valor_teclado(&value);
+                parametro[5] = value;
+            }
         break;
         case ELIPSE:
             al_show_native_message_box(NULL,"Remover Elipse","","Digite a coordenada do centro X e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
@@ -1100,16 +1114,19 @@ void remove_draw(const int type,const int filled,const int rounded,ListaGen** Li
             al_show_native_message_box(NULL,"Remover Arco","","Digite o raio e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
             le_valor_teclado(&value);
             parametro[2] = value;
+            al_show_native_message_box(NULL,"Remover Arco","","Digite o angulo inicial e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[3] = value;
+            al_show_native_message_box(NULL,"Remover Arco","","Digite o intervalo do angulo (delta) e tecle <ENTER>.",NULL,ALLEGRO_MESSAGEBOX_QUESTION);
+            le_valor_teclado(&value);
+            parametro[4] = value;
         break;
         default:
             printf("\nERRO: Algum erro foi encontrado na chamada da funcao remove_draw");
         break;
     }
 
-    // Ponteiros para busca e salvar o anterior
-    ListaGen* pointList = *Lista;
-    ListaGen* ant = NULL;
-    // Variavel para retornar se encontrou
+    // Variavel para retornar se encontrou o elemento
     int found = 0;
     // Ponteiros para busca
     Linha* pointLinha;
@@ -1128,38 +1145,51 @@ void remove_draw(const int type,const int filled,const int rounded,ListaGen** Li
             {
                 case LINE:
                     pointLinha = pointList->info;
-                    if((pointLinha->x1==parametro[0]) & (pointLinha->y1==parametro[1]) & (pointLinha->x2==parametro[2]) & (pointLinha->y2==parametro[3]))
+                    if((pointLinha->x1 == parametro[0]) && (pointLinha->y1 == parametro[1]) && (pointLinha->x2 == parametro[2]) && (pointLinha->y2 == parametro[3]) &&
+                      (pointLinha->colorR == corR) && (pointLinha->colorG == corG) && (pointLinha->colorB == corB))
                         found = 1;
                     break;
                 case TRIANGLE:
                     pointTri = pointList->info;
-                    if((pointTri->x1==parametro[0]) & (pointTri->y1==parametro[1]) & (pointTri->x2==parametro[2]) & (pointTri->y2==parametro[3]) & (pointTri->x3==parametro[4]) & (pointTri->y3==parametro[5]))
+                    if((pointTri->x1 == parametro[0]) && (pointTri->y1 == parametro[1]) && (pointTri->x2 == parametro[2]) && (pointTri->y2 == parametro[3]) &&
+                      (pointTri->x3 == parametro[4]) && (pointTri->y3 == parametro[5]) && (pointTri->colorR == corR) && (pointTri->colorG == corG) && (pointTri->colorB == corB))
                         found = 1;
                     break;
                 case RECTANGLE:
                     pointRet = pointList->info;
-                    if((pointRet->x1==parametro[0]) & (pointRet->y1==parametro[1]) & (pointRet->x2==parametro[2]) & (pointRet->y2==parametro[3]))
-                        found = 1;
+                    if((pointRet->x1 == parametro[0]) && (pointRet->y1 == parametro[1]) && (pointRet->x2 == parametro[2]) && (pointRet->y2 == parametro[3]) &&
+                      (pointRet->colorR == corR) && (pointRet->colorG == corG) && (pointRet->colorB == corB))
+                    {
+                        if(rounded)
+                        {
+                            if((pointRet->rx == parametro[4]) && (pointRet->ry == parametro[5]))
+                                found = 1;
+                        }
+                        else
+                            found = 1;
+                    }
                     break;
                 case ELIPSE:
                     pointElip = pointList->info;
-                    if((pointElip->cx==parametro[0]) & (pointElip->cy==parametro[1]) & (pointElip->rx==parametro[2]) & (pointElip->ry==parametro[3]))
+                    if((pointElip->cx == parametro[0]) && (pointElip->cy == parametro[1]) && (pointElip->rx == parametro[2]) && (pointElip->ry == parametro[3]) &&
+                      (pointElip->colorR == corR) && (pointElip->colorG == corG) && (pointElip->colorB == corB))
                         found = 1;
                     break;
                 case CIRCLE:
                     pointCirc = pointList->info;
-                    if((pointCirc->cx==parametro[0]) & (pointCirc->cy==parametro[1]) & (pointCirc->r==parametro[2]))
+                    if((pointCirc->cx == parametro[0]) && (pointCirc->cy == parametro[1]) && (pointCirc->r == parametro[2]) &&
+                      (pointCirc->colorR == corR) && (pointCirc->colorG == corG) && (pointCirc->colorB == corB))
                         found = 1;
                     break;
                 case ARC:
                     pointArco = pointList->info;
-                    if((pointArco->cx==parametro[0]) & (pointArco->cy==parametro[1]) & (pointArco->r==parametro[2]))
+                    if((pointArco->cx == parametro[0]) && (pointArco->cy == parametro[1]) && (pointArco->r == parametro[2]) && (pointArco->start_theta == parametro[3]) &&
+                      (pointArco->delta_theta == parametro[4]) && (pointArco->colorR == corR) && (pointArco->colorG == corG) && (pointArco->colorB == corB))
                         found = 1;
                     break;
                 case SPLINE: break;
                 case RIBBON: break;
-                default:
-                    printf("\nErro: formato descohecido.");
+                default: break;
             }
         }
         if(found != 1)
@@ -1196,8 +1226,7 @@ void remove_draw(const int type,const int filled,const int rounded,ListaGen** Li
                 free(pointArco); break;
             case SPLINE: printf("\nErro: formato nao implementado."); break;
             case RIBBON: printf("\nErro: formato nao implementado."); break;
-            default:
-                printf("\nErro: formato descohecido.");
+            default: break;
         }
     }
     else
